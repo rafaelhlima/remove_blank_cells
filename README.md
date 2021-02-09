@@ -19,13 +19,13 @@ After installing the extension, you'll notice a new icon in your standard toolba
 
 ### Creating a Keyboard Shortcut
 
-You can also associate a keyboard shortcut to the *Remove_Blanks_Click* method, which is located in the module *RBMain" of the *RemoveBlankCells* library. This library is added to the *My Macros* container after the extension is installed.
+You can associate a keyboard shortcut to the *Remove_Blanks_Click* method, which is located in the module *RBMain* of the *RemoveBlankCells* library. This library is added to the *My Macros* container after the extension is installed.
 
 To create a shortcut:
 
 1) Open LibreOffice Calc and go to **Tools > Customize**
 2) Select the **Keyboard** tab
-3) In the **Shorcut Keys** section, choose which shortcut you wish to assign to this extension (for instance, *Ctrl + Shift + M*).
+3) In the **Shorcut Keys** section, choose which shortcut you wish to assign to this extension (for instance, *Ctrl+Shift+M*).
 4) In the **Category** section, navigate to *LibreOffice Macros > MyMacros > RemoveBlankCells > RBMain*
 5) In the **Function** section, choose *Remove_Blanks_Click* and click the **Modify** button
 
@@ -53,6 +53,8 @@ When you select a single row, the extension removes all blank cells placing cell
 
 When you select a range with multiple rows and columns (a table), the extension will show a dialog box for you to decide what shall be done with the data.
 
+![](Icons/Action_Dialog.png)
+
 If you select *Remove all blank rows*, then all rows with contents will be moved to the top of the selected range.
 
 ![](GIFs/RB_Rows.gif)
@@ -71,6 +73,6 @@ This is still an experimental feature. If you select *Remove all blank cells (co
 
 ## Compatibility
 
-This extension was developed using LibreOffice 7.0. However, it should be compatible with LO 6.x onwards.
+This extension was developed using LibreOffice 7.0. However, it should be compatible with LO 6.2 onwards.
 
 All screenshots, GIFs and files were created using Kubuntu 20.10.
