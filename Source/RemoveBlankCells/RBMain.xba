@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="RBMain" script:language="StarBasic" script:moduleType="normal">Option Explicit
+
+&apos;Global reference for the RBDlg dialog
+Dim oRBDlg
+
+&apos;************************************************************************************
+&apos;
+&apos;Main method called when &quot;Remove Blank Cells&quot; is clicked
+&apos;This mainly determines the course of action based on the currently selected range
+&apos;
+&apos;************************************************************************************
+Sub Remove_Blanks_Click
+	&apos;Gets the current selection
+	Dim currentSel : currentSel = ThisComponent.getCurrentSelection()
+	&apos;Determines the type of selection
+	If currentSel.supportsService(&quot;com.sun.star.sheet.SheetCell&quot;) Then
+		&apos;A single cell is selected. Does nothing.
+		MsgBox(&quot;You have selected a single cell. This action can only be performed over a single range.&quot;, MB_OK, Title := &quot;Remove Blank Cells&quot;)
+	ElseIf currentSel.supportsService(&quot;com.sun.star.sheet.SheetCellRange&quot;) Then
+		&apos;A single range is selected. Now we need to define if it is a single row, single column or a matrix selection
+		Dim nRows, nCols
+		nRows = currentSel.Rows.getCount()
+		nCols = currentSel.Columns.getCount()
+		&apos;Starts a new Undo context
+		Dim undoMgr
+		undoMgr = ThisComponent.UndoManager
+		undoMgr.enterUndoContext(&quot;Remove Blank Cells&quot;)
+		&apos;Determines what needs to be made
+		If nRows = 1 And nCols &gt; 1 Then
+			RB_SingleRow(currentSel)
+		ElseIf nRows &gt; 1 And nCols = 1 Then
+			&apos;Call the method that removes blanks in a single column
+			RB_SingleColumn(currentSel)
+		ElseIf nRows &gt; 1 And nCols &gt; 1 Then
+			&apos;Show the dialog for the user to decide what to do
+			RBDlg_Show
+		Else
+			&apos;If it enters here, then the selection is invalid
+			MsgBox(&quot;The selected range is invalid.&quot;, MB_OK, Title := &quot;Remove Blank Cells&quot;)
+		End If
+		&apos;Leaves the Undo context
+		undoMgr.leaveUndoContext(&quot;Macro Rafael&quot;)
+	ElseIf currentSel.supportsService(&quot;com.sun.star.sheet.SheetCellRanges&quot;) Then
+		&apos;Multiple ranges are selected. This extension supports only single ranges.
+		MsgBox &quot;You have multiple ranges selected. This action can only be performed over a single range.&quot;
+	Else
+		&apos;If it enters here, then the selection is invalid
+		MsgBox(&quot;The selected range is invalid.&quot;, MB_OK, Title := &quot;Remove Blank Cells&quot;)
+	End If
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;This method is called when a single column is selected
+&apos;Performs the removal of blank cells in a single column range
+&apos;
+&apos;************************************************************************************
+Sub RB_SingleColumn(oRange as Object)
+	&apos;Get the number of rows in the selection
+	Dim nRows : nRows = oRange.Rows.getCount()
+	&apos;Gets the first row with values in the sheet
+	Dim firstRow as Long
+	Dim firstAddres : firstAddres = FirstNonEmptyCell()
+	firstRow = firstAddres(0)
+	&apos;Gets the size of the area with data in the spreadsheet
+	&apos;This avoids unecessary large selections, such as the whole column being selected
+	Dim maxRows : maxRows = UBound(ThisComponent.CurrentController.ActiveSheet.Data) + 1 + firstRow
+	&apos; Dim temp as Variant : temp = ThisComponent.CurrentController.ActiveSheet
+	If nRows &gt; maxRows Then
+		nRows = maxRows
+	End If
+	&apos;Enum with cell types
+	Dim eTypes as Variant
+	eTypes = com.sun.star.table.CellContentType
+	&apos;Counts how many empty cells there are
+	Dim countEmpty : countEmpty = 0
+	Dim i, oCell
+	For i = 0 to nRows - 1
+		oCell = oRange.getCellByPosition(0, i)
+		If oCell.getType() = eTypes.EMPTY Then
+			countEmpty = countEmpty + 1
+		End If
+	Next i
+	&apos;Checks if there are empty cells, otherwise return without doing nothing
+	If countEmpty = 0 Then Exit Sub
+	&apos;If all cells are empty, return without doing anything
+	If countEmpty = nRows Then Exit Sub
+	&apos;Creates an Array with the indices of cells that contain values
+	Dim countValues : countValues = nRows - countEmpty
+	Dim idxValues(0 to countValues - 1)
+	Dim idxInsert : idxInsert = 0
+	For i = 0 to nRows - 1
+		oCell = oRange.getCellByPosition(0, i)
+		If oCell.getType() &lt;&gt; eTypes.EMPTY Then
+			idxValues(idxInsert) = i
+			idxInsert = idxInsert + 1
+		End If
+	Next i
+	&apos;Copies values from the indices in idxValues to the cells ranging from 0 to (countValues - 1)
+	Dim readCell, writeCell, readIdx, cellType
+	For i = LBound(idxValues) to UBound(idxValues)
+		&apos;Reads contents from cell
+		readIdx = idxValues(i)
+		readCell = oRange.getCellByPosition(0, readIdx)
+		&apos;Write contents to new destination
+		cellType = readCell.getType()
+		writeCell = oRange.getCellByPosition(0, i)
+		&apos;Write behavior for cell containing VALUE
+		If cellType = eTypes.VALUE Then
+			writeCell.setValue(readCell.getValue())
+			writeCell.NumberFormat = readCell.NumberFormat
+		End If
+		&apos;Write behavior for cell containing TEXT
+		If cellType = eTypes.TEXT Then
+			writeCell.setString(readCell.getString())
+		End If
+		&apos;Write behavior for cell containing FORMULA
+		If cellType = eTypes.FORMULA Then
+			writeCell.setFormula(readCell.getFormula())
+			writeCell.NumberFormat = readCell.NumberFormat
+		End If
+	Next i
+	&apos;Clear the remaining cells
+	Dim oCellsToClear as Object
+	oCellsToClear = oRange.getCellRangeByPosition(0, countValues, 0, nRows - 1)
+	Dim oClearFlags as Variant
+	oClearFlags = com.sun.star.sheet.CellFlags
+	oCellsToClear.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+		oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;This method is called when a single row is selected
+&apos;Performs the removal of blank cells in a single row range
+&apos;
+&apos;************************************************************************************
+Sub RB_SingleRow(oRange as Object)
+	&apos;Get the number of columns in the selection
+	Dim nCols : nCols = oRange.Columns.getCount()
+	&apos;Gets the first column with values in the sheet
+	Dim firstCol as Long
+	Dim firstAddres : firstAddres = FirstNonEmptyCell()
+	firstCol = firstAddres(1)
+	&apos;Gets the size of the area with data in the spreadsheet
+	&apos;This avoids unecessary large selections, such as the whole row being selected
+	Dim maxCols : maxCols = UBound(ThisComponent.CurrentController.ActiveSheet.Data(0)) + 1 + firstCol
+	If nCols &gt; maxCols Then
+		nCols = maxCols
+	End If
+	&apos;Enum with cell types
+	Dim eTypes as Variant
+	eTypes = com.sun.star.table.CellContentType
+	&apos;Counts how many empty cells there are
+	Dim countEmpty : countEmpty = 0
+	Dim i, oCell
+	For i = 0 to nCols - 1
+		oCell = oRange.getCellByPosition(i, 0)
+		If oCell.getType() = eTypes.EMPTY Then
+			countEmpty = countEmpty + 1
+		End If
+	Next i
+	&apos;Checks if there are empty cells, otherwise return without doing anything
+	If countEmpty = 0 Then Exit Sub
+	&apos;If all cells are empty, return without doing anything
+	If countEmpty = nCols Then Exit Sub
+	&apos;Creates an Array with the indices of cells that contain values
+	Dim countValues : countValues = nCols - countEmpty
+	Dim idxValues(0 to countValues - 1)
+	Dim idxInsert : idxInsert = 0
+	For i = 0 to nCols - 1
+		oCell = oRange.getCellByPosition(i, 0)
+		If oCell.getType() &lt;&gt; eTypes.EMPTY Then
+			idxValues(idxInsert) = i
+			idxInsert = idxInsert + 1
+		End If
+	Next i
+	&apos;Copies values from the indices in idxValues to the cells ranging from 0 to (countValues - 1)
+	Dim readCell, writeCell, readIdx, cellType
+	For i = LBound(idxValues) to UBound(idxValues)
+		&apos;Reads contents from cell
+		readIdx = idxValues(i)
+		readCell = oRange.getCellByPosition(readIdx, 0)
+		&apos;Write contents to new destination
+		cellType = readCell.getType()
+		writeCell = oRange.getCellByPosition(i, 0)
+		&apos;Write behavior for cell containing VALUE
+		If cellType = eTypes.VALUE Then
+			writeCell.setValue(readCell.getValue())
+			writeCell.NumberFormat = readCell.NumberFormat
+		End If
+		&apos;Write behavior for cell containing TEXT
+		If cellType = eTypes.TEXT Then
+			writeCell.setString(readCell.getString())
+		End If
+		&apos;Write behavior for cell containing FORMULA
+		If cellType = eTypes.FORMULA Then
+			writeCell.setFormula(readCell.getFormula())
+			writeCell.NumberFormat = readCell.NumberFormat
+		End If
+	Next i
+	&apos;Clear the remaining cells
+	Dim oCellsToClear as Object
+	oCellsToClear = oRange.getCellRangeByPosition(countValues, 0, nCols - 1, 0)
+	Dim oClearFlags as Variant
+	oClearFlags = com.sun.star.sheet.CellFlags
+	oCellsToClear.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+		oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;This method is called when a matrix is selected
+&apos;Performs the removal all blank rows (rows with no values - all empty)
+&apos;
+&apos;************************************************************************************
+Sub RB_RemoveEmptyRows
+	&apos;Gets the current selection
+	Dim currentSel : currentSel = ThisComponent.getCurrentSelection()
+	&apos;Determines the number of rows and columns in the selection
+	Dim nRows : nRows = currentSel.Rows.getCount()
+	Dim nCols : nCols = currentSel.Columns.getCount()
+	&apos;Gets the first row and column with values in the sheet
+	Dim firstRow as Long, firstCol as Long
+	Dim firstAddres : firstAddres = FirstNonEmptyCell()
+	firstRow = firstAddres(0)
+	firstCol = firstAddres(1)
+	&apos;Gets the size of the area with data in the spreadsheet
+	&apos;This avoids unecessary large selections, such as the whole column being selected
+	Dim oData : oData = ThisComponent.CurrentController.ActiveSheet.Data
+	Dim maxRows : maxRows = UBound(oData) + 1 + firstRow
+	Dim maxCols : maxCols = UBound(oData(0)) + 1 + firstCol
+	If nRows &gt; maxRows Then
+		nRows = maxRows
+	End If
+	If nCols &gt; maxCols Then
+		nCols = maxCols
+	End If
+	&apos;Creates an array to store the indices of empty rows
+	Dim idxEmpty(0 to nRows - 1) As Long
+	Dim idxNotEmpty(0 to nRows - 1) As Long
+	Dim countEmpty as Long, countNotEmpty as Long
+	&apos;Enum with cell types
+	Dim eTypes as Variant
+	eTypes = com.sun.star.table.CellContentType
+	&apos;Flags for ClearContents
+	Dim oClearFlags as Variant
+	oClearFlags = com.sun.star.sheet.CellFlags
+	&apos;For each row, checks if all cells are empty
+	Dim oCell as Object, i As Long, j As Long
+	Dim isRowEmpty as Boolean
+	For i = 0 to nRows - 1
+		&apos;Checks if there is a non-empty cell in the row
+		isRowEmpty = True
+		For j = 0 to nCols - 1
+			oCell = currentSel.getCellByPosition(j, i)
+			dim ctype : ctype = oCell.getType()
+			If oCell.getType() &lt;&gt; eTypes.EMPTY Then
+				isRowEmpty = False
+				Exit For
+			End If
+		Next j
+		&apos;Checks if the row is empty and records its index
+		If isRowEmpty Then
+			idxEmpty(countEmpty) = i
+			countEmpty = countEmpty + 1
+		Else
+			idxNotEmpty(countNotEmpty) = i
+			countNotEmpty = countNotEmpty + 1
+		End If
+	Next i
+	&apos;Exits the sub if there&apos;s nothing to be done
+	If countEmpty = 0 Or countEmpty = nRows Then
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	&apos;Removes all blank rows
+	Dim idxCopyFrom as Long, idx as Long
+	Dim oCellCopy as Object, oCellPaste as Object, cellType as Variant
+	For idx = 0 To countNotEmpty - 1
+		&apos;Row to be copied onto row idx
+		idxCopyFrom = idxNotEmpty(idx)
+		&apos;If they&apos;re the same value, there&apos;s no need to copy
+		&apos;Hence, a copy is only made if the indices are different
+		If idx &lt;&gt; idxCopyFrom Then
+			&apos;Copies the entire row (all columns from current row)
+			For j = 0 to nCols - 1
+				oCellCopy = currentSel.getCellByPosition(j, idxCopyFrom)
+				oCellPaste = currentSel.getCellByPosition(j, idx)
+				&apos;Write contents to new destination
+				cellType = oCellCopy.getType()
+				&apos;Write behavior for cell containing VALUE
+				If cellType = eTypes.VALUE Then
+					oCellPaste.setValue(oCellCopy.getValue())
+					oCellPaste.NumberFormat = oCellCopy.NumberFormat
+				End If
+				&apos;Write behavior for cell containing TEXT
+				If cellType = eTypes.TEXT Then
+					oCellPaste.setString(oCellCopy.getString())
+				End If
+				&apos;Write behavior for cell containing FORMULA
+				If cellType = eTypes.FORMULA Then
+					oCellPaste.setFormula(oCellCopy.getFormula())
+					oCellPaste.NumberFormat = oCellCopy.NumberFormat
+				End If
+				&apos;Write behavior for cell containing EMPTY
+				If cellType = eTypes.EMPTY Then
+					oCellPaste.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+						oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+				End If
+			Next j
+		End If
+	Next idx
+	&apos;Clear the remaining cells
+	Dim oCellsToClear as Object
+	oCellsToClear = currentSel.getCellRangeByPosition(0, countNotEmpty, nCols - 1, nRows - 1)
+	oCellsToClear.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+		oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;This method is called when a matrix is selected
+&apos;Performs the removal all blank columns (columns with no values - all empty)
+&apos;
+&apos;************************************************************************************
+Sub RB_RemoveEmptyColumns
+	&apos;Gets the current selection
+	Dim currentSel : currentSel = ThisComponent.getCurrentSelection()
+	&apos;Determines the number of rows and columns in the selection
+	Dim nRows : nRows = currentSel.Rows.getCount()
+	Dim nCols : nCols = currentSel.Columns.getCount()
+	&apos;Gets the first row and column with values in the sheet
+	Dim firstRow as Long, firstCol as Long
+	Dim firstAddres : firstAddres = FirstNonEmptyCell()
+	firstRow = firstAddres(0)
+	firstCol = firstAddres(1)
+	&apos;Gets the size of the area with data in the spreadsheet
+	&apos;This avoids unecessary large selections, such as the whole column being selected
+	Dim odata : odata = ThisComponent.CurrentController.ActiveSheet.Data
+	Dim maxRows : maxRows = UBound(oData) + 1 + firstRow
+	Dim maxCols : maxCols = UBound(oData(0)) + 1 + firstCol
+	If nRows &gt; maxRows Then
+		nRows = maxRows
+	End If
+	If nCols &gt; maxCols Then
+		nCols = maxCols
+	End If
+	&apos;Creates an array to store the indices of empty rows
+	Dim idxEmpty(0 to nCols - 1) As Long
+	Dim idxNotEmpty(0 to nCols - 1) As Long
+	Dim countEmpty as Long, countNotEmpty as Long
+	&apos;Enum with cell types
+	Dim eTypes as Variant
+	&apos;Flags for ClearContents
+	Dim oClearFlags as Variant
+	oClearFlags = com.sun.star.sheet.CellFlags
+	eTypes = com.sun.star.table.CellContentType
+	&apos;For each row, checks if all cells are empty
+	Dim oCell as Object, i As Long, j As Long
+	Dim isColEmpty as Boolean
+	For j = 0 to nCols - 1
+		&apos;Checks if there is a non-empty cell in the column
+		isColEmpty = True
+		For i = 0 to nRows - 1
+			oCell = currentSel.getCellByPosition(j, i)
+			dim ctype : ctype = oCell.getType()
+			If oCell.getType() &lt;&gt; eTypes.EMPTY Then
+				isColEmpty = False
+				Exit For
+			End If
+		Next i
+		&apos;Checks if the column is empty and records its index
+		If isColEmpty Then
+			idxEmpty(countEmpty) = j
+			countEmpty = countEmpty + 1
+		Else
+			idxNotEmpty(countNotEmpty) = j
+			countNotEmpty = countNotEmpty + 1
+		End If
+	Next j
+	&apos;Exits the sub if there&apos;s nothing to be done
+	If countEmpty = 0 Or countEmpty = nCols Then
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	&apos;Removes all blank columns
+	Dim idxCopyFrom as Long, idx as Long
+	Dim oCellCopy as Object, oCellPaste as Object, cellType as Variant
+	For idx = 0 To countNotEmpty - 1
+		&apos;Column to be copied onto row idx
+		idxCopyFrom = idxNotEmpty(idx)
+		&apos;If they&apos;re the same value, there&apos;s no need to copy
+		&apos;Hence, a copy is only made if the indices are different
+		If idx &lt;&gt; idxCopyFrom Then
+			&apos;Copies the entire column (all rows from current column)
+			For i = 0 to nRows - 1
+				oCellCopy = currentSel.getCellByPosition(idxCopyFrom, i)
+				oCellPaste = currentSel.getCellByPosition(idx, i)
+				&apos;Write contents to new destination
+				cellType = oCellCopy.getType()
+				&apos;Write behavior for cell containing VALUE
+				If cellType = eTypes.VALUE Then
+					oCellPaste.setValue(oCellCopy.getValue())
+					oCellPaste.NumberFormat = oCellCopy.NumberFormat
+				End If
+				&apos;Write behavior for cell containing TEXT
+				If cellType = eTypes.TEXT Then
+					oCellPaste.setString(oCellCopy.getString())
+				End If
+				&apos;Write behavior for cell containing FORMULA
+				If cellType = eTypes.FORMULA Then
+					oCellPaste.setFormula(oCellCopy.getFormula())
+					oCellPaste.NumberFormat = oCellCopy.NumberFormat
+				End If
+				&apos;Write behavior for cell containing EMPTY
+				If cellType = eTypes.EMPTY Then
+					oCellPaste.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+						oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+				End If
+			Next i
+		End If
+	Next idx
+	&apos;Clear the remaining cells
+	Dim oCellsToClear as Object
+	oCellsToClear = currentSel.getCellRangeByPosition(countNotEmpty, 0, nCols - 1, nRows - 1)
+	oCellsToClear.clearContents(oClearFlags.VALUE + oClearFlags.DATETIME + oClearFlags.STRING + _
+		oClearFlags.ANNOTATION + oClearFlags.FORMULA)
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;This method is called when a matrix is selected
+&apos;Performs the removal all blank cells, compacting the data to the top-left corner
+&apos;This is done by apply RemoveSingleRow and then RemoveSingleColumn for all
+&apos;rows and columns
+&apos;
+&apos;************************************************************************************
+Sub RB_RemoveEmptyCells
+	&apos;Locks screen updating
+	ThisComponent.lockControllers()
+	ThisComponent.addActionLock()
+	&apos;Gets the current selection
+	Dim currentSel : currentSel = ThisComponent.getCurrentSelection()
+	&apos;Determines the number of rows and columns in the selection
+	Dim nRows : nRows = currentSel.Rows.getCount()
+	Dim nCols : nCols = currentSel.Columns.getCount()
+	&apos;Gets the first row and column with values in the sheet
+	Dim firstRow as Long, firstCol as Long
+	Dim firstAddres : firstAddres = FirstNonEmptyCell()
+	firstRow = firstAddres(0)
+	firstCol = firstAddres(1)
+	&apos;Gets the size of the area with data in the spreadsheet
+	&apos;This avoids unecessary large selections, such as the whole column being selected
+	Dim odata : odata = ThisComponent.CurrentController.ActiveSheet.Data
+	Dim maxRows : maxRows = UBound(oData) + 1 + firstRow
+	Dim maxCols : maxCols = UBound(oData(0)) + 1 + firstCol
+	If nRows &gt; maxRows Then
+		nRows = maxRows
+	End If
+	If nCols &gt; maxCols Then
+		nCols = maxCols
+	End If
+	&apos;Variables used to navigate rows and columns indices
+	Dim col as Long, row as Long
+	&apos;For each row apply RB_RemoveSingleRow
+	Dim oRange as Object
+	For row = 0 to nRows - 1
+		&apos;Select the row
+		oRange = currentSel.getCellRangeByPosition(0, row, nCols - 1, row)
+		&apos;Remove blanks
+		RB_SingleRow(oRange)
+	Next row
+	&apos;For each column apply RB_RemoveSingleColumn
+	For col = 0 to nCols - 1
+		&apos;Select the column
+		oRange = currentSel.getCellRangeByPosition(col, 0, col, nRows - 1)
+		&apos;Remove blanks
+		RB_SingleColumn(oRange)
+	Next col
+	&apos;Unlocks screen updating
+	ThisComponent.removeActionLock()
+	ThisComponent.unlockControllers()
+End Sub
+
+
+&apos;************************************************************************************
+&apos;
+&apos;These methods show the RBDlg and close it when &quot;Do Nothing&quot; is pressed
+&apos;
+&apos;************************************************************************************
+Sub RBDlg_Show
+	Dim oLibD, oDlg
+	DialogLibraries.LoadLibrary(&quot;RemoveBlankCells&quot;)
+	oLibD = DialogLibraries.getByName(&quot;RemoveBlankCells&quot;)
+	oDlg = oLibD.getByName(&quot;RBDlg&quot;)
+	oRBDlg = CreateUnoDialog(oDlg)
+	oRBDlg.execute()
+End Sub
+
+&apos;Sub associated with the OK button
+Sub RBDlg_OK
+	&apos;Determines which Option Button is selected
+	Dim rbOption as Object
+	
+	&apos;Checks if Remove Blank Rows is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;OPRemoveRows&quot;)
+	If rbOption.State Then
+		RB_RemoveEmptyRows
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	&apos;Checks if Remove Blank Rows is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;OPRemoveColumns&quot;)
+	If rbOption.State Then
+		RB_RemoveEmptyColumns
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	&apos;Checks if Remove Blank Rows is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;OPRemoveCells&quot;)
+	If rbOption.State Then
+		RB_RemoveEmptyCells
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	msgbox &quot;ok&quot;
+End Sub
+
+&apos;Sub associated with the Cancel button
+Sub RBDlg_Cancel
+	oRBDlg.endExecute()
+End Sub
+
+&apos;Auxiliary function: returns the row and column of the first used cell in the current sheet
+Function FirstNonEmptyCell() As Variant
+	Dim oSheet as Variant : oSheet = ThisComponent.CurrentController.ActiveSheet
+	Dim wholeSheet as Variant : wholeSheet = oSheet.getCellRangeByName(&quot;A1:AMJ1048576&quot;)
+	Dim cursor : cursor = oSheet.createCursorByRange(wholeSheet)
+	cursor.gotoStartOfUsedArea(False)
+	&apos;Returns the row number and column number, indexed at zero
+	Dim result : result = Array(cursor.RangeAddress.StartRow, cursor.RangeAddress.StartColumn)
+	FirstNonEmptyCell = result
+End Function
+
+
+</script:module>
