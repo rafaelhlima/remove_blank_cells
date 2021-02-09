@@ -8,7 +8,7 @@ This extension is still in Beta stage, so bugs are expected. If anything goes wr
 
 To install this extension:
 
-1) Download the Latest OXT file
+1) Download the [Latest OXT file](Releases/RBCells_0-9.oxt)
 2) On any LibreOffice component, go to **Tools > Extensions Manager...**
 3) Click **Add** and chose the OXT file
 4) Click **OK** and Accept the licence to finish installation
@@ -48,3 +48,9 @@ If you select *Remove all blank columns*, then all columns with contents will be
 This is still an experimental feature. If you select *Remove all blank cells (compact data)*, then all cells with contents will be compacted to the upper-left corner of the selected range.
 
 ![](GIFs/RB_Compact.gif)
+
+## Compatibility
+
+This extension was developed using LibreOffice 7.0. However, it should be compatible with LO 6.x onwards.
+
+All screenshots, GIFs and files were created using Kubuntu 20.10.
