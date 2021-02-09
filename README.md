@@ -17,7 +17,21 @@ After installing the extension, you'll notice a new icon in your standard toolba
 
 ![](Icons/Toolbar_with_icon.png)
 
-You can also associate a keyboard shortcut to the *Remove_Blanks_Click* method of the *RemoveBlankCells* library (it'll be added to the *My Macros* container after the extension is installed).
+### Creating a Keyboard Shortcut
+
+You can also associate a keyboard shortcut to the *Remove_Blanks_Click* method, which is located in the module *RBMain" of the *RemoveBlankCells* library. This library is added to the *My Macros* container after the extension is installed.
+
+To create a shortcut:
+
+1) Open LibreOffice Calc and go to **Tools > Customize**
+2) Select the **Keyboard** tab
+3) In the **Shorcut Keys** section, choose which shortcut you wish to assign to this extension (for instance, *Ctrl + Shift + M*).
+4) In the **Category** section, navigate to *LibreOffice Macros > MyMacros > RemoveBlankCells > RBMain*
+5) In the **Function** section, choose *Remove_Blanks_Click* and click the **Modify** button
+
+If you did everything right, your **Customize** dialog should look like this:
+
+![](Icons/Customize_keyboard.png)
 
 ## Usage
 
