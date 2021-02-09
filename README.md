@@ -13,6 +13,12 @@ To install this extension:
 3) Click **Add** and chose the OXT file
 4) Click **OK** and Accept the licence to finish installation
 
+After installing the extension, you'll notice a new icon in your standard toolbar named "Remove Blank Cells".
+
+![](Icons/Toolbar_with_icon.png)
+
+You can also associate a keyboard shortcut to the *Remove_Blanks_Click* method of the *RemoveBlankCells* library (it'll be added to the *My Macros* container after the extension is installed).
+
 ## Usage
 
 This extension provides 5 different use cases for removing blank cells as described below. The extension decides what will be done based on the current selection in the active sheet.
