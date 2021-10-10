@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
-<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="RBDlg" dlg:left="218" dlg:top="128" dlg:width="172" dlg:height="118" dlg:closeable="true" dlg:moveable="true" dlg:title="Remove Blank Cells">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="RBDlg" dlg:left="218" dlg:top="128" dlg:width="172" dlg:height="89" dlg:closeable="true" dlg:moveable="true" dlg:title="Remove Blank Cells">
  <dlg:bulletinboard>
-  <dlg:text dlg:id="LabWarning" dlg:tab-index="0" dlg:left="7" dlg:top="10" dlg:width="159" dlg:height="12" dlg:value="You selected a range with multiple rows and columns."/>
-  <dlg:text dlg:id="Label1" dlg:tab-index="1" dlg:left="7" dlg:top="24" dlg:width="158" dlg:height="12" dlg:value="What do you want to do?"/>
+  <dlg:text dlg:id="LabWarning" dlg:tab-index="0" dlg:left="7" dlg:top="8" dlg:width="159" dlg:height="12" dlg:value="You selected a range with multiple rows and columns."/>
+  <dlg:text dlg:id="Label1" dlg:tab-index="1" dlg:left="7" dlg:top="22" dlg:width="158" dlg:height="12" dlg:value="What do you want to do?"/>
   <dlg:radiogroup>
-   <dlg:radio dlg:id="OPRemoveRows" dlg:tab-index="2" dlg:left="7" dlg:top="40" dlg:width="154" dlg:height="12" dlg:value="Remove all blank rows" dlg:group-name="MainGroup" dlg:checked="true"/>
-   <dlg:radio dlg:id="OPRemoveColumns" dlg:tab-index="3" dlg:left="7" dlg:top="55" dlg:width="156" dlg:height="12" dlg:value="Remove all blank columns" dlg:group-name="MainGroup"/>
-   <dlg:radio dlg:id="OPRemoveCells" dlg:tab-index="4" dlg:left="7" dlg:top="70" dlg:width="158" dlg:height="12" dlg:value="Remove all blank cells (compact data)" dlg:group-name="MainGroup"/>
+   <dlg:radio dlg:id="OPRemoveRows" dlg:tab-index="2" dlg:left="7" dlg:top="37" dlg:width="154" dlg:height="12" dlg:value="Remove all blank rows" dlg:group-name="MainGroup" dlg:checked="true"/>
+   <dlg:radio dlg:id="OPRemoveColumns" dlg:tab-index="3" dlg:left="7" dlg:top="50" dlg:width="156" dlg:height="12" dlg:value="Remove all blank columns" dlg:group-name="MainGroup"/>
   </dlg:radiogroup>
-  <dlg:button dlg:id="BtnOK" dlg:tab-index="5" dlg:left="7" dlg:top="87" dlg:width="78" dlg:height="23" dlg:value="OK">
+  <dlg:button dlg:id="BtnOK" dlg:tab-index="4" dlg:left="7" dlg:top="66" dlg:width="78" dlg:height="18" dlg:value="OK">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:RemoveBlankCells.RBMain.RBDlg_OK?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
-  <dlg:button dlg:id="BtnCancel" dlg:tab-index="6" dlg:left="88" dlg:top="87" dlg:width="78" dlg:height="23" dlg:value="Cancel">
+  <dlg:button dlg:id="BtnCancel" dlg:tab-index="5" dlg:left="88" dlg:top="66" dlg:width="78" dlg:height="18" dlg:value="Cancel">
    <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:RemoveBlankCells.RBMain.RBDlg_Cancel?language=Basic&amp;location=application" script:language="Script"/>
   </dlg:button>
  </dlg:bulletinboard>
