@@ -4,6 +4,8 @@ This is an extension for LibreOffice Calc that removes blank cells in various si
 
 This extension is still in Beta stage, so bugs are expected. If anything goes wrong, please report an issue.
 
+**Important:** Version 0.9.1 is the last release with the first generation of the user interface and API. From 0.10 and onwards significant API changes were made, the UI was changed and many new features were added. It is also important to note that since 0.10 this extension will NOT work in OpenOffice due to API differences.
+
 ## Installation
 
 To install this extension:
