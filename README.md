@@ -17,6 +17,10 @@ After installing the extension, you'll notice a new icon in your standard toolba
 
 ![](Icons/Toolbar_with_icon.png)
 
+A new menu entry is added to **Data - Remove blank cells**.
+
+If you're using the Tabbed user interface, a new button is added to the **Extensions** tab.
+
 ### Creating a Keyboard Shortcut
 
 You can associate a keyboard shortcut to the *Remove_Blanks_Click* method, which is located in the module *RBMain* of the *RemoveBlankCells* library. This library is added to the *My Macros* container after the extension is installed.
