@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="RBL10n" script:language="StarBasic" script:moduleType="normal">Option Explicit
+
+&apos;Creates the POT file with all strings used in the extension
+Sub CreatePOTFile
+	&apos;Initialize the L10N service
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	Dim svc As Object : svc = CreateScriptService(&quot;L10N&quot;)
+
+	&apos;Strings used in RBDlg
+	svc.AddText(&quot;RBDlg.title&quot;,                &quot;Remove blank cells&quot;)
+	svc.AddText(&quot;RBDlg.labInfo&quot;,              &quot;Choose one of the operations below&quot;)
+	svc.AddText(&quot;RBDlg.opRemoveRows&quot;,         &quot;Remove all blank rows&quot;)
+	svc.AddText(&quot;RBDlg.opRemoveColumns&quot;,      &quot;Remove all blank columns&quot;)
+	svc.AddText(&quot;RBDlg.labAdvanced&quot;,          &quot;Advanced options&quot;)
+	svc.AddText(&quot;RBDlg.opRemoveRowsByColumn&quot;, &quot;Remove all rows where the following column is empty&quot;)
+	svc.AddText(&quot;RBDlg.opRemoveColumnsByRow&quot;, &quot;Remove all columns where the following row is empty&quot;)
+	svc.AddText(&quot;RBDlg.labColumn&quot;,            &quot;Column&quot;)
+	svc.AddText(&quot;RBDlg.labRow&quot;,               &quot;Row&quot;)
+	svc.AddText(&quot;RBDlg.checkFastMode&quot;,        &quot;Fast mode (all formatting will be lost)&quot;)
+	svc.AddText(&quot;RBDlg.btnOK&quot;,                &quot;OK&quot;)
+	svc.AddText(&quot;RBDlg.btnCancel&quot;,            &quot;Cancel&quot;)
+	svc.AddText(&quot;RBDlg.btnHelp&quot;,              &quot;Help&quot;)
+	
+	&apos;Strings used in MsgDialog
+	svc.AddText(&quot;MsgBox_A&quot;,          &quot;The current selection contains a single cell.&quot;)
+	svc.AddText(&quot;MsgBox_B&quot;,          &quot;This action can only be performed over a single range of cells.&quot;)
+	svc.AddText(&quot;MsgBox_C&quot;,          &quot;The current selection contains multiple ranges.&quot;)
+	svc.AddText(&quot;MsgBox_D&quot;,          &quot;The selected range is invalid.&quot;)
+	svc.AddText(&quot;MsgBox_E&quot;,          &quot;&quot;&quot;Column&quot;&quot; must be a valid column name (such as A, B, C) and must be inside the selected range.&quot;)
+	svc.AddText(&quot;MsgBox_F&quot;,          &quot;&quot;&quot;Row&quot;&quot; must be a valid row number (such as 1, 2, 3) and must be inside the selected range.&quot;)
+	svc.AddText(&quot;MsgBox_G&quot;,          &quot;An unexpected error occurred.&quot;)
+	svc.AddText(&quot;MsgBox_H&quot;,          &quot;If you think this is a bug, report it at:&quot;)
+	svc.AddText(&quot;MsgBox_Error&quot;,      &quot;Error&quot;)
+	svc.AddText(&quot;MsgBox_Unexpected&quot;, &quot;Unexpected error&quot;)
+	
+	&apos;Strings used in ProgDialog
+	svc.AddText(&quot;ProgDialog.title&quot;,      &quot;Removing…&quot;)
+	svc.AddText(&quot;ProgDialog.labInfo&quot;,    &quot;Removing blank cells… %1 %&quot;)
+	svc.AddText(&quot;ProgDialog.finalizing&quot;, &quot;Removing blank cells… 100% (finalizing)&quot;)
+	
+	&apos;Create the POT file
+	svc.ExportToPOTFile(&quot;/home/rafael/Documents/rb_strings.pot&quot;)
+End Sub
+
+&apos;Returns the base path to where the extension is installed
+Function GetExtensionFolder() As String
+	Dim pip As Object, basePath As String
+	pip = GetDefaultContext.getByName(&quot;/singletons/com.sun.star.deployment.PackageInformationProvider&quot;)
+    basePath = pip.getPackageLocation(&quot;org.rafaelhlima.removeblanks&quot;)
+    GetExtensionFolder = basePath
+End Function
+
+Sub TestPOFile
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	Dim pathToPO, svc
+	pathToPO = GetExtensionFolder() &amp; &quot;/po&quot;
+	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;en-US&quot;)
+	MsgBox svc._(&quot;RBDlg.title&quot;)
+End Sub
+</script:module>

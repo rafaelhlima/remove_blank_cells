@@ -7,7 +7,7 @@
     <icon>
         <default xlink:href="icons/RB_Icon.svg" />
     </icon>
-    <version value="0.1"/>
+    <version value="0.10.0 alpha"/>
     <dependencies>
 		<OpenOffice.org-minimal-version value="3.3" name="OpenOffice.org 3.3"/>
 	</dependencies>
@@ -23,6 +23,6 @@
         <name>Remove Blank Cells Description</name>
     </display-name>
     <update-information>
-		<src xlink:href="http://roland65.free.fr/texmaths/TexMaths.update.xml" />
+		<src/>
     </update-information>
 </description>

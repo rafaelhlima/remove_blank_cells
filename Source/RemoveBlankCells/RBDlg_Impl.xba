@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="RBDlg_Impl" script:language="StarBasic" script:moduleType="normal">Option Explicit
+
+&apos;Initializes and shows the main dialog
+Sub RBDlg_Show
+	&apos;Creates the dialog
+	Dim oLibD As Object, oDlg As Object, oDlgModel As Object
+	oLibD = DialogLibraries.getByName(&quot;RemoveBlankCells&quot;)
+	oDlg = oLibD.getByName(&quot;RBDlg&quot;)
+	oRBDlg = CreateUnoDialog(oDlg)
+	oDlgModel = oRBDlg.getModel()
+	
+	&apos; Initializes all the dialog strings
+	oDlgModel.Title                                   = glb_L10N._(&quot;RBDlg.title&quot;)
+	oDlgModel.getByName(&quot;labInfo&quot;).Label              = glb_L10N._(&quot;RBDlg.labInfo&quot;)
+	oDlgModel.getByName(&quot;opRemoveRows&quot;).Label         = glb_L10N._(&quot;RBDlg.opRemoveRows&quot;)
+	oDlgModel.getByName(&quot;opRemoveColumns&quot;).Label      = glb_L10N._(&quot;RBDlg.opRemoveColumns&quot;)
+	oDlgModel.getByName(&quot;labAdvanced&quot;).Label          = glb_L10N._(&quot;RBDlg.labAdvanced&quot;)
+	oDlgModel.getByName(&quot;opRemoveRowsByColumn&quot;).Label = glb_L10N._(&quot;RBDlg.opRemoveRowsByColumn&quot;)
+	oDlgModel.getByName(&quot;labColumn&quot;).Label            = glb_L10N._(&quot;RBDlg.labColumn&quot;)
+	oDlgModel.getByName(&quot;opRemoveColumnsByRow&quot;).Label = glb_L10N._(&quot;RBDlg.opRemoveColumnsByRow&quot;)
+	oDlgModel.getByName(&quot;labRow&quot;).Label               = glb_L10N._(&quot;RBDlg.labRow&quot;)
+	oDlgModel.getByName(&quot;checkFastMode&quot;).Label        = glb_L10N._(&quot;RBDlg.checkFastMode&quot;)
+	oDlgModel.getByName(&quot;btnOK&quot;).Label                = glb_L10N._(&quot;RBDlg.btnOK&quot;)
+	oDlgModel.getByName(&quot;btnCancel&quot;).Label            = glb_L10N._(&quot;RBDlg.btnCancel&quot;)
+	oDlgModel.getByName(&quot;btnHelp&quot;).Label              = glb_L10N._(&quot;RBDlg.btnHelp&quot;)
+
+	&apos;Sets the default configuration
+	oDlgModel.getByName(&quot;opRemoveRows&quot;).State = True
+	oDlgModel.getByName(&quot;checkFastMode&quot;).State = False
+	RBDlg_Impl.UpdateOptionStatus()
+
+	&apos;Change the available options depending on the selection
+	Dim nRows As Long, nCols As Long
+	Dim currentSel As Object : currentSel = ThisComponent.getCurrentSelection()
+	nRows = currentSel.Rows.getCount()
+	nCols = currentSel.Columns.getCount()
+	&apos;If there is only one row selected
+	If nRows = 1 Then
+		oDlgModel.getByName(&quot;opRemoveRows&quot;).Enabled = False
+		oDlgModel.getByName(&quot;opRemoveColumns&quot;).Enabled = True
+		oDlgModel.getByName(&quot;opRemoveColumns&quot;).State = True
+		oDlgModel.getByName(&quot;opRemoveRowsByColumn&quot;).Enabled = False
+		oDlgModel.getByName(&quot;opRemoveColumnsByRow&quot;).Enabled = False
+		oDlgModel.getByName(&quot;labAdvanced&quot;).Enabled = False
+	End If
+	&apos;If there is only one column selected
+	If nCols = 1 Then
+		oDlgModel.getByName(&quot;opRemoveRows&quot;).Enabled = True
+		oDlgModel.getByName(&quot;opRemoveRows&quot;).State = True
+		oDlgModel.getByName(&quot;opRemoveColumns&quot;).Enabled = False
+		oDlgModel.getByName(&quot;opRemoveRowsByColumn&quot;).Enabled = False
+		oDlgModel.getByName(&quot;opRemoveColumnsByRow&quot;).Enabled = False
+		oDlgModel.getByName(&quot;labAdvanced&quot;).Enabled = False
+	End If
+	&apos;Centers de dialog
+	RBMain.CenterDialog(oRBDlg)
+	&apos;Show the dialog
+	oRBDlg.Execute()
+End Sub
+
+&apos;Sub associated with the Cancel button
+Sub RBDlg_Cancel
+	oRBDlg.endExecute()
+End Sub
+
+&apos;Sub associated with the Help button
+Sub RBDlg_Help
+	&apos;Opens the help page in GitHub associated with this release
+	Dim svc As Object
+	svc = CreateScriptService(&quot;Session&quot;)
+	svc.OpenURLInBrowser(&quot;https://github.com/rafaelhlima/remove_blank_cells&quot;)
+End Sub
+
+&apos;Sub associated with the OK button
+Sub RBDlg_OK_Click
+	&apos;Determines if &quot;Fast mode&quot; is checked
+	Dim bCheckFastMode As Boolean
+	bCheckFastMode = oRBDlg.getModel().getByName(&quot;checkFastMode&quot;).State
+	&apos;Determines which Option Button is selected
+	Dim rbOption as Object
+	&apos;Checks the height and width of the current selection
+	Dim nRows As Long, nCols As Long
+	Dim currentSel As Object : currentSel = ThisComponent.getCurrentSelection()
+	nRows = currentSel.Rows.getCount()
+	nCols = currentSel.Columns.getCount()
+	
+	&apos;Checks if &quot;Remove Blank Rows&quot; option is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;opRemoveRows&quot;)
+	If rbOption.State Then
+		If bCheckFastMode Then
+			If nCols = 1 Then
+				Call RBMain.RB_SingleColumn_FastMode
+			Else
+				Call RBMain.RB_MultipleColumns_FastMode
+			End If
+		Else
+			If nCols = 1 Then
+				Call RBMain.RB_SingleColumn_NormalMode
+			Else
+				Call RBMain.RB_MultipleColumns_NormalMode
+			End If
+		End If
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	&apos;Checks if &quot;Remove Blank Columns&quot; option is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;opRemoveColumns&quot;)
+	If rbOption.State Then
+		If bCheckFastMode Then
+			If nRows = 1 Then
+				Call RBMain.RB_SingleRow_FastMode
+			Else
+				Call RBMain.RB_MultipleRows_FastMode
+			End If
+		Else
+			If nRows = 1 Then
+				Call RBMain.RB_SingleRow_NormalMode
+			Else
+				Call RBMain.RB_MultipleRows_NormalMode
+			End If
+		End If
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	&apos;Checks if &quot;Remove Blank Rows By Column&quot; option is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;opRemoveRowsByColumn&quot;)
+	If rbOption.State Then
+		&apos;Check the informed column
+		Dim userColumn As String : userColumn = oRBDlg.getModel().getByName(&quot;textColumn&quot;).Text
+		Dim colID : colID = GetColumnIDNumber(userColumn)
+		If colID = -1 Then
+			&apos;Column is outside the selected range
+			MsgBox(glb_L10N._(&quot;MsgBox_E&quot;), _
+				MB_OK + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;MsgBox_Error&quot;))
+			Exit Sub
+		End If
+		If bCheckFastMode Then
+			&apos;RB_RemoveRowsByColumn_FastMode
+			MsgBox &quot;RB_RemoveRowsByColumn_FastMode&quot;
+		Else
+			&apos;RB_RemoveRowsByColumn
+			MsgBox &quot;RB_RemoveRowsByColumn_NormalMode&quot;
+		End If
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+	
+	&apos;Checks if Remove Blank Columns By Row is selected
+	rbOption = oRBDlg.getModel().getByName(&quot;opRemoveColumnsByRow&quot;)
+	If rbOption.State Then
+		&apos;Check the informed row
+		Dim userRow As String : userRow = oRBDlg.getModel().getByName(&quot;textRow&quot;).Text
+		Dim rowID : rowID = GetRowIDNumber(userRow)
+		If rowID = -1 Then
+			&apos;Row is outside the selected range
+			MsgBox(glb_L10N._(&quot;MsgBox_F&quot;), _
+				MB_OK + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;MsgBox_Error&quot;))
+			Exit Sub
+		End If
+		If bCheckFastMode Then
+			&apos;RB_RemoveColumnsByRow_FastMode
+			MsgBox &quot;RB_RemoveColumnsByRow_FastMode&quot;
+		Else
+			&apos;RB_RemoveColumnsByRow
+			MsgBox &quot;RB_RemoveColumnsByRow_NormalMode&quot;
+		End If
+		oRBDlg.endExecute()
+		Exit Sub
+	End If
+End Sub
+
+&apos;Updates the dialog according to which radio button is selected
+Sub UpdateOptionStatus
+	&apos;Gets the current state of the option buttons
+	Dim rbOptionC as Boolean : rbOptionC = oRBDlg.getModel().getByName(&quot;opRemoveRowsByColumn&quot;).State
+	Dim rbOptionD as Boolean : rbOptionD = oRBDlg.getModel().getByName(&quot;opRemoveColumnsByRow&quot;).State
+	&apos;Updates the label and text edit
+	oRBDlg.getModel().getByName(&quot;labColumn&quot;).Enabled = rbOptionC
+	oRBDlg.getModel().getByName(&quot;textColumn&quot;).Enabled = rbOptionC
+	oRBDlg.getModel().getByName(&quot;labABC&quot;).Enabled = rbOptionC
+	oRBDlg.getModel().getByName(&quot;labRow&quot;).Enabled = rbOptionD
+	oRBDlg.getModel().getByName(&quot;textRow&quot;).Enabled = rbOptionD
+	oRBDlg.getModel().getByName(&quot;lab123&quot;).Enabled = rbOptionD
+End Sub
+
+&apos;Checks if the informed Column is inside the selected range
+&apos;Returns the column ID number (starting at 0); if invalid, returns -1
+Function GetColumnIDNumber(userColumn As String) As Long
+	On Local Error Goto Catch:
+	Dim tempName As String : tempName = userColumn &amp; &quot;1&quot;
+	Dim oSel As Object : oSel = ThisComponent.CurrentSelection
+	Dim sheetID As Long : sheetID  = oSel.RangeAddress.Sheet
+	Dim tempRange As Object : tempRange = ThisComponent.Sheets(sheetID).getCellRangeByName(tempName)
+	&apos;Min and max values for column ID number
+	Dim minColumn As Long : minColumn = oSel.RangeAddress.StartColumn
+	Dim maxColumn As Long : maxColumn = oSel.RangeAddress.EndColumn
+	&apos;Check the column specified by the user
+	Dim curColumn As Long : curColumn = tempRange.RangeAddress.StartColumn
+	&apos;Check column validity
+	If curColumn &lt;= maxColumn and curColumn &gt;= minColumn Then
+		GetColumnIDNumber = curColumn
+	Else
+		GetColumnIDNumber = -1
+	End If
+	Exit Function
+Catch:
+	&apos;If anything wrong happens, then the column is possibly invalid
+	GetColumnIDNumber = -1
+End Function
+
+&apos;Checks if the informed Row is inside the selected range
+&apos;Returns the row ID number (starting at 0); if invalid, returns -1
+Function GetRowIDNumber(userRow As String) As Long
+	On Local Error Goto Catch:
+	&apos;Test if the provided userRow is a number
+	If not IsNumeric(userRow) Then GoTo Catch
+	&apos;Validade the informed userRow
+	Dim tempName As String : tempName = &quot;A&quot; &amp; userRow
+	Dim oSel As Object : oSel = ThisComponent.CurrentSelection
+	Dim sheetID As Long : sheetID  = oSel.RangeAddress.Sheet
+	Dim tempRange As Object : tempRange = ThisComponent.Sheets(sheetID).getCellRangeByName(tempName)
+	&apos;Min and max values for column ID number
+	Dim minRow As Long : minRow = oSel.RangeAddress.StartRow
+	Dim maxRow As Long : maxRow = oSel.RangeAddress.EndRow
+	&apos;Check the column specified by the user
+	Dim curRow As Long : curRow = tempRange.RangeAddress.StartRow
+	&apos;Check column validity
+	If curRow &lt;= maxRow and curRow &gt;= minRow Then
+		GetRowIDNumber = curRow
+	Else
+		GetRowIDNumber = -1
+	End If
+	Exit Function
+Catch:
+	&apos;If anything wrong happens, then the column is possibly invalid
+	GetRowIDNumber = -1
+End Function
+
+</script:module>

@@ -2,4 +2,6 @@
 <!DOCTYPE library:library PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "library.dtd">
 <library:library xmlns:library="http://openoffice.org/2000/library" library:name="RemoveBlankCells" library:readonly="false" library:passwordprotected="false">
  <library:element library:name="RBMain"/>
+ <library:element library:name="RBDlg_Impl"/>
+ <library:element library:name="RBL10n"/>
 </library:library>

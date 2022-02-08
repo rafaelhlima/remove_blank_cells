@@ -28,7 +28,57 @@
                         <value xml:lang="pt">Remover células em branco...</value>
                      </prop>
                      <prop oor:name="URL" oor:type="xs:string">
-                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_Click</value>
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_With_Dialog</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="MenuItems">
+                  <node oor:name="N009" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value xml:lang="en">Remove blank rows</value>
+                        <value xml:lang="pt">Remover linhas em branco</value>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Rows</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="MenuItems">
+                  <node oor:name="N010" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value xml:lang="en">Remove blank columns</value>
+                        <value xml:lang="pt">Remover colunas em branco</value>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Columns</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="MenuItems">
+                  <node oor:name="N011" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>private:separator</value>
                      </prop>
                      <prop oor:name="Target" oor:type="xs:string">
                         <value>_self</value>
@@ -57,7 +107,57 @@
                   <value>AddLast</value>
                </prop>
                <node oor:name="ToolBarItems">
+                  <node oor:name="N005" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>private:separator</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="ToolBarItems">
                   <node oor:name="N002" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value xml:lang="en">Remove blank rows</value>
+                        <value xml:lang="pt">Remover linhas em branco</value>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Rows</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="ToolBarItems">
+                  <node oor:name="N003" oor:op="replace">
+                     <prop oor:name="Context" oor:type="xs:string">
+                        <value/>
+                     </prop>
+                     <prop oor:name="Title" oor:type="xs:string">
+                        <value xml:lang="en">Remove blank columns</value>
+                        <value xml:lang="pt">Remover colunas em branco</value>
+                     </prop>
+                     <prop oor:name="URL" oor:type="xs:string">
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Columns</value>
+                     </prop>
+                     <prop oor:name="Target" oor:type="xs:string">
+                        <value>_self</value>
+                     </prop>
+                  </node>
+               </node>
+               <node oor:name="ToolBarItems">
+                  <node oor:name="N004" oor:op="replace">
                      <prop oor:name="Context" oor:type="xs:string">
                         <value/>
                      </prop>
@@ -66,7 +166,7 @@
                         <value xml:lang="pt">Remover células em branco</value>
                      </prop>
                      <prop oor:name="URL" oor:type="xs:string">
-                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_Click</value>
+                        <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_With_Dialog</value>
                      </prop>
                      <prop oor:name="Target" oor:type="xs:string">
                         <value>_self</value>
@@ -83,7 +183,7 @@
                   <value>com.sun.star.text.SpreadsheetDocument</value>
                </prop>
                <prop oor:name="URL" oor:type="xs:string">
-                  <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_Click</value>
+                  <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_With_Dialog</value>
                </prop>
                <prop oor:name="ImageIdentifier" oor:type="xs:string">
                   <value />
@@ -104,7 +204,7 @@
       <node oor:name="Images">
          <node oor:name="RemoveBlankCells.OfficeToolbarMerging.Image1" oor:op="replace">
             <prop oor:name="URL" oor:type="xs:string">
-               <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_Click</value>
+               <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_With_Dialog</value>
             </prop>
             <node oor:name="UserDefinedImages">
                <prop oor:name="ImageSmallURL" oor:type="xs:string">
