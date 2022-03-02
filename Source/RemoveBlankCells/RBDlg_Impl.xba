@@ -139,8 +139,7 @@ Sub RBDlg_OK_Click
 			Exit Sub
 		End If
 		If bCheckFastMode Then
-			&apos;RB_RemoveRowsByColumn_FastMode
-			MsgBox &quot;RB_RemoveRowsByColumn_FastMode&quot;
+			Call RBMain.RB_RemoveRowsByColumn_FastMode(colID)
 		Else
 			&apos;RB_RemoveRowsByColumn
 			MsgBox &quot;RB_RemoveRowsByColumn_NormalMode&quot;
@@ -162,8 +161,7 @@ Sub RBDlg_OK_Click
 			Exit Sub
 		End If
 		If bCheckFastMode Then
-			&apos;RB_RemoveColumnsByRow_FastMode
-			MsgBox &quot;RB_RemoveColumnsByRow_FastMode&quot;
+			Call RBMain.RB_RemoveColumnsByRow_FastMode(rowID)
 		Else
 			&apos;RB_RemoveColumnsByRow
 			MsgBox &quot;RB_RemoveColumnsByRow_NormalMode&quot;
