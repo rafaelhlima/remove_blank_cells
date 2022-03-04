@@ -40,6 +40,12 @@ Sub CreatePOTFile
 	svc.AddText(&quot;ProgDialog.labInfo&quot;,    &quot;Removing blank cells… %1 %&quot;)
 	svc.AddText(&quot;ProgDialog.finalizing&quot;, &quot;Removing blank cells… 100% (finalizing)&quot;)
 	
+	&apos;Warning messages
+	svc.AddText(&quot;WarningDeleteRows&quot;,    &quot;This operation may remove rows that contain values in other columns.&quot;)
+	svc.AddText(&quot;WarningDeleteColumns&quot;, &quot;This operation may remove columns that contain values in other rows.&quot;)
+	svc.AddText(&quot;WarningProcede&quot;,       &quot;Do you wish to procede?&quot;)
+	svc.AddText(&quot;MsgBox_Warning&quot;,       &quot;Warning&quot;)
+
 	&apos;Create the POT file
 	svc.ExportToPOTFile(&quot;/home/rafael/Documents/rb_strings.pot&quot;)
 End Sub
@@ -56,6 +62,7 @@ Sub TestPOFile
 	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
 	Dim pathToPO, svc
 	pathToPO = GetExtensionFolder() &amp; &quot;/po&quot;
+	MsgBox pathToPO
 	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;en-US&quot;)
 	MsgBox svc._(&quot;RBDlg.title&quot;)
 End Sub

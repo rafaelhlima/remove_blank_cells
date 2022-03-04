@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.libreoffice.org/enter_bug.cgi?product=LibreOffice&bug_status=UNCONFIRMED&component=UI\n"
-"POT-Creation-Date: 2022-02-01 19:45:41\n"
+"POT-Creation-Date: 2022-03-04 14:53:56\n"
 "PO-Revision-Date: YYYY-MM-DD HH:MM:SS\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -118,10 +118,28 @@ msgctxt "ProgDialog.title"
 msgid  "Removing…"
 msgstr ""
 
+#, kde-format
 msgctxt "ProgDialog.labInfo"
-msgid  "Removing blank cells... %1 %"
+msgid  "Removing blank cells… %1 %"
 msgstr ""
 
+#, kde-format
 msgctxt "ProgDialog.finalizing"
-msgid  "Removing blank cells... 100% (finalizing)"
+msgid  "Removing blank cells… 100% (finalizing)"
+msgstr ""
+
+msgctxt "WarningDeleteRows"
+msgid  "This operation may remove rows that contain values in other columns."
+msgstr ""
+
+msgctxt "WarningDeleteColumns"
+msgid  "This operation may remove columns that contain values in other rows."
+msgstr ""
+
+msgctxt "WarningProcede"
+msgid  "Do you wish to procede?"
+msgstr ""
+
+msgctxt "MsgBox_Warning"
+msgid  "Warning"
 msgstr ""

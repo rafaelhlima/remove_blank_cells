@@ -721,7 +721,7 @@ Sub RB_SingleColumn_NormalMode
 	Dim fa : fa = createUNOService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
 	Dim numCellsWithValue as Long
 	numCellsWithValue = fa.callFunction(&quot;COUNTA&quot;, Array(ThisComponent.Sheets(sheetID).getCellRangeByName(oSel.AbsoluteName)))
-	&apos;If none of all cells have value, then nothing needs to be done
+	&apos;If none or all cells have value, then nothing needs to be done
 	If numCellsWithValue = selHeight Or numCellsWithValue = 0 Then GoTo ReleaseLock
 	
 	&apos;If there are more that 100 empty ranges to remove, show progress bar
@@ -839,7 +839,7 @@ Sub RB_SingleRow_NormalMode
 	Dim fa : fa = createUNOService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
 	Dim numCellsWithValue as Long
 	numCellsWithValue = fa.callFunction(&quot;COUNTA&quot;, Array(ThisComponent.Sheets(sheetID).getCellRangeByName(oSel.AbsoluteName)))
-	&apos;If none of all cells have value, then nothing needs to be done
+	&apos;If none or all cells have value, then nothing needs to be done
 	If numCellsWithValue = selWidth Or numCellsWithValue = 0 Then GoTo ReleaseLock
 	
 	&apos;If there are more that 100 empty ranges to remove, show progress bar
@@ -1507,6 +1507,277 @@ Catch:
 	GoTo ReleaseLock
 End Sub
 
+&apos;**************************************************************************************************
+&apos; NORMAL MODE
+&apos; This method removes blank rows from multiple columns when the value of a specific column is
+&apos; blank. Beware that this may remove rows that have values in other columns.
+&apos; Normal mode means that blank cells are removed from the sheet, thus maintaining the 
+&apos; formatting of the remaining cells
+&apos;**************************************************************************************************
+Sub RB_RemoveRowsByColumn_NormalMode(colID As Long)
+	&apos;Locks screen updating
+	ThisComponent.lockControllers()
+	ThisComponent.addActionLock()
+	&apos;If an error occurs, make sure the locks are released back
+	On Local Error Goto Catch
+	
+	&apos;Get the current selection
+	Dim oSel : oSel = ThisComponent.CurrentSelection
+	&apos;Get the starting sheet number and position of the current selection
+	Dim sheetID  : sheetID  = oSel.RangeAddress.Sheet
+	Dim startCol : startCol = oSel.RangeAddress.StartColumn
+	Dim startRow : startRow = oSel.RangeAddress.StartRow
+	Dim endCol   : endCol   = oSel.RangeAddress.EndColumn
+	Dim endRow   : endRow   = oSel.RangeAddress.EndRow
+
+	&apos;Get the maximum number of rows and columns (useful when the user selects past the last value)
+	Dim maxRow as Long, maxCol as Long
+	Dim cursor : cursor = ThisComponent.Sheets(sheetID).createCursor()
+	cursor.gotoEndOfUsedArea(False)
+	maxRow = cursor.RangeAddress.StartRow
+	maxCol = cursor.RangeAddress.StartColumn
+	&apos;Adjust the selection address based on maxRow and maxCol
+	If endRow &gt; maxRow Then endRow = maxRow
+	If endCol &gt; maxCol Then endCol = maxCol
+	&apos;Calculate the height and width of the selection
+	Dim selHeight : selHeight = endRow - startRow + 1
+	Dim selWidth  : selWidth  = endCol - startCol + 1
+	&apos;Redefine the selection based on new endRow and endCol
+	Set oSel = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, endCol, endRow)
+	
+	&apos;Query empty ranges in the specified column used as reference
+	Dim oRefCol As Object
+	oRefCol = ThisComponent.Sheets(sheetID).getCellRangeByPosition(colID, startRow, colID, endRow)
+	Dim emptyRanges : emptyRanges = oRefCol.queryEmptyCells()
+	Dim qtEmptyRanges : qtEmptyRanges = emptyRanges.Count
+	&apos;If there are no empty ranges, exit the sub
+	If qtEmptyRanges = 0 Then Goto ReleaseLock
+	
+	&apos;Get the number of non-empty rows in the reference column using the COUNTA function
+	Dim fa : fa = createUNOService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
+	Dim numRowsWithValue as Long
+	numRowsWithValue = fa.callFunction(&quot;COUNTA&quot;, Array(ThisComponent.Sheets(sheetID).getCellRangeByName(oRefCol.AbsoluteName)))
+	&apos;If none or all cells have value, then nothing needs to be done
+	If numRowsWithValue = selHeight Then GoTo ReleaseLock
+	&apos;If no cells have value in the reference column, then the entire range needs to be cleared
+	If numRowsWithValue = 0 Then
+		ClearRange(oSel)
+		oSel = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, endCol, startRow)
+		ThisComponent.CurrentController.Select(oSel)
+		GoTo ReleaseLock
+	End If
+	
+	&apos;If there are more that 100 empty ranges to remove, show progress bar
+	Dim bShowProgress as Boolean : bShowProgress = False
+	Dim oProgDlg as Object
+	Dim oProgControl as Object
+	Dim oLabControl as Object
+	If qtEmptyRanges &gt; 100 Then
+		bShowProgress = True
+		DialogLibraries.LoadLibrary(&quot;RemoveBlankCells&quot;)
+		oProgDlg = CreateUNODialog(DialogLibraries.RemoveBlankCells.ProgDialog)
+		oLabControl = oProgDlg.getModel().getByName(&quot;labInfo&quot;)
+		oProgControl = oProgDlg.getModel().getByName(&quot;ProgressControl&quot;)
+		oProgDlg.Title = glb_L10N._(&quot;ProgDialog.title&quot;)
+		oProgControl.ProgressValueMin = 0
+		oProgControl.ProgressValueMax = 100
+		oProgControl.ProgressValue = 0
+		If glb_IsParentDlgVisible Then
+			CenterChildDialog(oProgDlg)
+		Else
+			CenterDialog(oProgDlg)
+		End If
+		oProgDlg.SetVisible(True)
+	End If
+	
+	&apos;Array with the ranges of empty cells
+	Dim arrEmptyRanges : arrEmptyRanges = emptyRanges.RangeAddresses
+	&apos;Control the advance of the progress bar (for each 1% or empty ranges to remove)
+	Dim progressStep As Long
+	Dim currentProgress as Integer
+	Dim progressCount As Integer
+	progressStep = qtEmptyRanges / 100
+	currentProgress = 0
+	progressCount = 0
+	
+	&apos;Remove empty ranges in reverse
+	Dim i as Long
+	Dim curRange as Object
+	For i = UBound(arrEmptyRanges) to 0 Step -1
+		&apos;Effectivelly remove the range
+		curRange = arrEmptyRanges(i)
+		curRange.StartColumn = startCol
+		curRange.EndColumn = endCol
+		ThisComponent.Sheets(sheetID).RemoveRange(curRange, com.sun.star.sheet.CellDeleteMode.UP)
+		&apos;Updates the progress bar if it&apos;s shown
+		If bShowProgress Then
+			progressCount = progressCount + 1
+			If progressCount &gt;= progressStep Then
+				currentProgress = currentProgress + 1
+				If currentProgress &gt; 100 Then currentProgress = 100
+				oProgControl.ProgressValue = currentProgress
+				oLabControl.Label = glb_L10N._(&quot;ProgDialog.labInfo&quot;, currentProgress)
+				progressCount = 0
+			End If
+		End If
+	Next i
+	
+	&apos;Inserts back the removed rows at the end of the new range (to preserve the position of cells outside the selected range)
+	curRange = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow + numRowsWithValue, endCol, endRow)
+	ThisComponent.Sheets(sheetID).InsertCells(curRange.RangeAddress, com.sun.star.sheet.CellInsertMode.DOWN)
+	&apos;Select the new range with the processed values
+	Dim newRange as Object
+	newRange = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, endCol, startRow + numRowsWithValue - 1)
+	ThisComponent.CurrentController.Select(newRange)
+	
+ReleaseLock:
+	&apos;Unlocks screen updating
+	ThisComponent.removeActionLock()
+	ThisComponent.unlockControllers()
+	Exit Sub
+	
+Catch:
+	&apos;Catches unexpected exception
+	ShowBugWarning
+	GoTo ReleaseLock
+End Sub
+
+&apos;**************************************************************************************************
+&apos; NORMAL MODE
+&apos; This method removes blank columns from multiple rows when the value of a specific row is
+&apos; blank. Beware that this may remove columns that have values in other rows.
+&apos; Normal mode means that blank cells are removed from the sheet, thus maintaining the formatting
+&apos; of the remaining cells
+&apos;**************************************************************************************************
+Sub RB_RemoveColumnsByRow_NormalMode(rowID As Long)
+	&apos;Locks screen updating
+	ThisComponent.lockControllers()
+	ThisComponent.addActionLock()
+	&apos;If an error occurs, make sure the locks are released back
+	&apos;On Local Error Goto Catch
+	
+	&apos;Get the current selection
+	Dim oSel : oSel = ThisComponent.CurrentSelection
+	&apos;Get the starting sheet number and position of the current selection
+	Dim sheetID  : sheetID  = oSel.RangeAddress.Sheet
+	Dim startCol : startCol = oSel.RangeAddress.StartColumn
+	Dim startRow : startRow = oSel.RangeAddress.StartRow
+	Dim endCol   : endCol   = oSel.RangeAddress.EndColumn
+	Dim endRow   : endRow   = oSel.RangeAddress.EndRow
+
+	&apos;Get the maximum number of rows and columns (useful when the user selects past the last value)
+	Dim maxRow as Long, maxCol as Long
+	Dim cursor : cursor = ThisComponent.Sheets(sheetID).createCursor()
+	cursor.gotoEndOfUsedArea(False)
+	maxRow = cursor.RangeAddress.StartRow
+	maxCol = cursor.RangeAddress.StartColumn
+	&apos;Adjust the selection address based on maxRow and maxCol
+	If endRow &gt; maxRow Then endRow = maxRow
+	If endCol &gt; maxCol Then endCol = maxCol
+	&apos;Calculate the height and width of the selection
+	Dim selHeight : selHeight = endRow - startRow + 1
+	Dim selWidth  : selWidth  = endCol - startCol + 1
+	&apos;Redefine the selection based on new endRow and endCol
+	Set oSel = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, endCol, endRow)
+	
+	&apos;Query empty ranges in the reference row
+	Dim oRefRow As Object
+	oRefRow = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, rowID, endCol, rowID)
+	Dim emptyRanges : emptyRanges = oRefRow.queryEmptyCells()
+	Dim qtEmptyRanges : qtEmptyRanges = emptyRanges.Count
+	&apos;If there are no empty ranges, exit the sub
+	If qtEmptyRanges = 0 Then Goto ReleaseLock
+	
+	&apos;Get the number of non-empty cells using the COUNTA function
+	Dim fa : fa = createUNOService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
+	Dim numColsWithValue as Long
+	numColsWithValue = fa.callFunction(&quot;COUNTA&quot;, Array(ThisComponent.Sheets(sheetID).getCellRangeByName(oRefRow.AbsoluteName)))
+	&apos;If all cells have value, then nothing needs to be done
+	If numColsWithValue = selWidth Then GoTo ReleaseLock
+	&apos;If no cells have value in the reference row, then the entire range needs to be cleared
+	If numColsWithValue = 0 Then
+		ClearRange(oSel)
+		oSel = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, startCol, endRow)
+		ThisComponent.CurrentController.Select(oSel)
+		GoTo ReleaseLock
+	End If
+	
+	&apos;If there are more that 100 empty ranges to remove, show progress bar
+	Dim bShowProgress as Boolean : bShowProgress = False
+	Dim oProgDlg as Object
+	Dim oProgControl as Object
+	Dim oLabControl as Object
+	If qtEmptyRanges &gt; 100 Then
+		bShowProgress = True
+		DialogLibraries.LoadLibrary(&quot;RemoveBlankCells&quot;)
+		oProgDlg = CreateUNODialog(DialogLibraries.RemoveBlankCells.ProgDialog)
+		oLabControl = oProgDlg.getModel().getByName(&quot;labInfo&quot;)
+		oProgControl = oProgDlg.getModel().getByName(&quot;ProgressControl&quot;)
+		oProgDlg.Title = glb_L10N._(&quot;ProgDialog.title&quot;)
+		oProgControl.ProgressValueMin = 0
+		oProgControl.ProgressValueMax = 100
+		oProgControl.ProgressValue = 0
+		If glb_IsParentDlgVisible Then
+			CenterChildDialog(oProgDlg)
+		Else
+			CenterDialog(oProgDlg)
+		End If
+		oProgDlg.SetVisible(True)
+	End If
+	
+	&apos;Array with the ranges of empty cells
+	Dim arrEmptyRanges : arrEmptyRanges = emptyRanges.RangeAddresses
+	&apos;Control the advance of the progress bar (for each 1% or empty ranges to remove)
+	Dim progressStep As Long
+	Dim currentProgress as Integer
+	Dim progressCount As Integer
+	progressStep = qtEmptyRanges / 100
+	currentProgress = 0
+	progressCount = 0
+	
+	&apos;Remove empty ranges in reverse
+	Dim i as Long
+	Dim curRange as Object
+	For i = UBound(arrEmptyRanges) to 0 Step -1
+		&apos;Effectivelly remove the range
+		curRange = arrEmptyRanges(i)
+		curRange.StartRow = startRow
+		curRange.EndRow = endRow
+		ThisComponent.Sheets(sheetID).RemoveRange(curRange, com.sun.star.sheet.CellDeleteMode.LEFT)
+		&apos;Updates the progress bar if it&apos;s shown
+		If bShowProgress Then
+			progressCount = progressCount + 1
+			If progressCount &gt;= progressStep Then
+				currentProgress = currentProgress + 1
+				If currentProgress &gt; 100 Then currentProgress = 100
+				oProgControl.ProgressValue = currentProgress
+				oLabControl.Label = glb_L10N._(&quot;ProgDialog.labInfo&quot;, currentProgress)
+				progressCount = 0
+			End If
+		End If
+	Next i
+	
+	&apos;Inserts back the removed rows at the end of the new range (to preserve the position of cells outside the selected range)
+	curRange = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol + numColsWithValue, startRow, endCol, endRow)
+	ThisComponent.Sheets(sheetID).InsertCells(curRange.RangeAddress, com.sun.star.sheet.CellInsertMode.RIGHT)
+	&apos;Select the new range with the processed values
+	Dim newRange as Object
+	newRange = ThisComponent.Sheets(sheetID).getCellRangeByPosition(startCol, startRow, startCol + numColsWithValue - 1, endRow)
+	ThisComponent.CurrentController.Select(newRange)
+	
+ReleaseLock:
+	&apos;Unlocks screen updating
+	ThisComponent.removeActionLock()
+	ThisComponent.unlockControllers()
+	Exit Sub
+	
+Catch:
+	&apos;Catches unexpected exception
+	ShowBugWarning
+	GoTo ReleaseLock
+End Sub
+
+
 &apos;--------------------------------------------------------------------------------------------------
 &apos; AUXILIARY SUBS AND FUNCTIONS
 &apos;--------------------------------------------------------------------------------------------------
@@ -1561,7 +1832,7 @@ Function FM_IsColEmpty(ByRef oDataArray As Object, colID As Long, nRows As Long)
 End Function
 
 &apos;Copies one row from one data array to the other
-Sub FMCopyRow(fromArray As Object, toArray As Object, nCols As Long)
+Sub FM_CopyRow(fromArray As Object, toArray As Object, nCols As Long)
 	Dim i As Long
 	For i = 0 To nCols - 1
 		toArray(i) = fromArray(i)

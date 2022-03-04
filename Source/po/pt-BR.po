@@ -127,3 +127,19 @@ msgstr "Removendo células em branco… %1 %"
 msgctxt "ProgDialog.finalizing"
 msgid  "Removing blank cells… 100% (finalizing)"
 msgstr "Removendo células em branco… 100% (finalizando)"
+
+msgctxt "WarningDeleteRows"
+msgid  "This operation may remove rows that contain values in other columns."
+msgstr "Esta operação pode remover linhas que contém valores em outras colunas."
+
+msgctxt "WarningDeleteColumns"
+msgid  "This operation may remove columns that contain values in other rows."
+msgstr "Esta operação pode remover colunas que contém valores em outras linhas."
+
+msgctxt "WarningProcede"
+msgid  "Do you wish to procede?"
+msgstr "Você deseja continuar?"
+
+msgctxt "MsgBox_Warning"
+msgid  "Warning"
+msgstr ""

@@ -85,6 +85,8 @@ Sub RBDlg_OK_Click
 	Dim currentSel As Object : currentSel = ThisComponent.getCurrentSelection()
 	nRows = currentSel.Rows.getCount()
 	nCols = currentSel.Columns.getCount()
+	&apos;Store the option to procede in a warning dialog
+	Dim bProcede As Integer
 	
 	&apos;Checks if &quot;Remove Blank Rows&quot; option is selected
 	rbOption = oRBDlg.getModel().getByName(&quot;opRemoveRows&quot;)
@@ -138,11 +140,15 @@ Sub RBDlg_OK_Click
 				MB_OK + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;MsgBox_Error&quot;))
 			Exit Sub
 		End If
+		&apos;Warn user that this operation may remove existing data
+		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteRows&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProcede&quot;), _
+			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
+		If bProcede = IDNO Then Exit Sub
+		&apos;Check which mode to run (fast/normal)
 		If bCheckFastMode Then
 			Call RBMain.RB_RemoveRowsByColumn_FastMode(colID)
 		Else
-			&apos;RB_RemoveRowsByColumn
-			MsgBox &quot;RB_RemoveRowsByColumn_NormalMode&quot;
+			Call RBMain.RB_RemoveRowsByColumn_NormalMode(colID)
 		End If
 		oRBDlg.endExecute()
 		Exit Sub
@@ -160,11 +166,15 @@ Sub RBDlg_OK_Click
 				MB_OK + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;MsgBox_Error&quot;))
 			Exit Sub
 		End If
+		&apos;Warn user that this operation may remove existing data
+		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteColumns&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProcede&quot;), _
+			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
+		If bProcede = IDNO Then Exit Sub
+		&apos;Check which mode to run (fast/normal)
 		If bCheckFastMode Then
 			Call RBMain.RB_RemoveColumnsByRow_FastMode(rowID)
 		Else
-			&apos;RB_RemoveColumnsByRow
-			MsgBox &quot;RB_RemoveColumnsByRow_NormalMode&quot;
+			Call RBMain.RB_RemoveColumnsByRow_NormalMode(rowID)
 		End If
 		oRBDlg.endExecute()
 		Exit Sub
