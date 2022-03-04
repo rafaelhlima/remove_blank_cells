@@ -162,7 +162,7 @@
                         <value/>
                      </prop>
                      <prop oor:name="Title" oor:type="xs:string">
-                        <value xml:lang="en">Remove blank cells</value>
+                        <value xml:lang="en">Remove blank cells (with dialog)</value>
                         <value xml:lang="pt">Remover células em branco</value>
                      </prop>
                      <prop oor:name="URL" oor:type="xs:string">
@@ -189,7 +189,7 @@
                   <value />
                </prop>
                <prop oor:name="Title" oor:type="xs:string">
-                  <value xml:lang="en">Remove blank cells</value>
+                  <value xml:lang="en">Remove blank cells (with dialog)</value>
                   <value xml:lang="pt">Remover células em branco</value>
                </prop>
                <prop oor:name="Target" oor:type="xs:string">
@@ -202,16 +202,46 @@
          </node>
       </node>
       <node oor:name="Images">
-         <node oor:name="RemoveBlankCells.OfficeToolbarMerging.Image1" oor:op="replace">
+         <node oor:name="RemoveBlankCells.OfficeToolbarMerging.RB_Dialog" oor:op="replace">
             <prop oor:name="URL" oor:type="xs:string">
                <value>macro:///RemoveBlankCells.RBMain.Remove_Blanks_With_Dialog</value>
             </prop>
             <node oor:name="UserDefinedImages">
                <prop oor:name="ImageSmallURL" oor:type="xs:string">
-                  <value>%origin%/icons/RB_Icon.svg</value>
+                  <value>%origin%/icons/RB_Dialog.png</value>
                </prop>
                <prop oor:name="ImageBigURL" oor:type="xs:string">
-                  <value>%origin%/icons/RB_Icon.svg</value>
+                  <value>%origin%/icons/RB_Dialog.png</value>
+               </prop>
+            </node>
+         </node>
+      </node>
+      <node oor:name="Images">
+         <node oor:name="RemoveBlankCells.OfficeToolbarMerging.RB_RemoveRows" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+               <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Rows</value>
+            </prop>
+            <node oor:name="UserDefinedImages">
+               <prop oor:name="ImageSmallURL" oor:type="xs:string">
+                  <value>%origin%/icons/RB_RemoveRows.png</value>
+               </prop>
+               <prop oor:name="ImageBigURL" oor:type="xs:string">
+                  <value>%origin%/icons/RB_RemoveRows.png</value>
+               </prop>
+            </node>
+         </node>
+      </node>
+      <node oor:name="Images">
+         <node oor:name="RemoveBlankCells.OfficeToolbarMerging.RB_RemoveColumns" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+               <value>macro:///RemoveBlankCells.RBMain.Remove_Blank_Columns</value>
+            </prop>
+            <node oor:name="UserDefinedImages">
+               <prop oor:name="ImageSmallURL" oor:type="xs:string">
+                  <value>%origin%/icons/RB_RemoveColumns.png</value>
+               </prop>
+               <prop oor:name="ImageBigURL" oor:type="xs:string">
+                  <value>%origin%/icons/RB_RemoveColumns.png</value>
                </prop>
             </node>
          </node>
