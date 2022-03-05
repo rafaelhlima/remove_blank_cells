@@ -70,7 +70,7 @@ Sub RBDlg_Help
 	&apos;Opens the help page in GitHub associated with this release
 	Dim svc As Object
 	svc = CreateScriptService(&quot;Session&quot;)
-	svc.OpenURLInBrowser(&quot;https://github.com/rafaelhlima/remove_blank_cells&quot;)
+	svc.OpenURLInBrowser(&quot;https://github.com/rafaelhlima/remove_blank_cells/blob/main/Documentation/ExtensionHelp.md&quot;)
 End Sub
 
 &apos;Sub associated with the OK button
