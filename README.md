@@ -1,76 +1,59 @@
 # Remove Blank Cells
 
-This is an extension for LibreOffice Calc that removes blank cells in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
+![](Documentation/RB_MainDialog.png)
 
-This extension is still in Beta stage, so bugs are expected. If anything goes wrong, please report an issue.
+This is an extension for LibreOffice Calc that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
+
+This extension is still in Alpha stage, so bugs are expected. If anything goes wrong, please report an issue.
+
+## Table of Contents
+
+ * [Installation](#installation)
+ * [Usage](#usage)
+ * [Compatibility](#compatibility)
+ * [Contributing](#contributing)
 
 ## Installation
 
 To install this extension:
 
-1) Download the [Latest OXT file](Releases/RBCells_0-9.1.oxt)
-2) On any LibreOffice component, go to **Tools > Extensions Manager...**
+1) Download the [Latest OXT file](https://github.com/rafaelhlima/remove_blank_cells/releases/latest)
+2) On any LibreOffice application, go to **Tools > Extensions Manager...**
 3) Click **Add** and chose the OXT file
 4) Click **OK** and Accept the licence to finish installation
+5) Restart LibreOffice
 
-After installing the extension, you'll notice a new icon in your standard toolbar named "Remove Blank Cells".
+### Usage
 
-![](Icons/Toolbar_with_icon.png)
+After installing the extension, the following menu entries will be added to the **Data** menu:
 
-A new menu entry is added to **Data - Remove blank cells**.
+* **Remove blank cells:** opens the main extension dialog to define settings before carrying out any changes.
+* **Remove blank rows:** removes blank rows in the current selection without showing the dialog. This option uses the Normal Mode.
+* **Remove blank columns:** removes blank columns in the current selection without showing the dialog. This option uses the Normal Mode.
 
-If you're using the Tabbed user interface, a new button is added to the **Extensions** tab.
+To quickly run the commands above, the following shortcuts are set by default:
 
-### Creating a Keyboard Shortcut
+| Command | Shortcut |
+| --- | --- |
+| Remove blank cells | `Alt + Shift + B` |
+| Remove blank rows | `Alt + Shift + N` |
+| Remove blank cells | `Alt + Shift + M` |
 
-You can associate a keyboard shortcut to the *Remove_Blanks_Click* method, which is located in the module *RBMain* of the *RemoveBlankCells* library. This library is added to the *My Macros* container after the extension is installed.
-
-To create a shortcut:
-
-1) Open LibreOffice Calc and go to **Tools > Customize**
-2) Select the **Keyboard** tab
-3) In the **Shorcut Keys** section, choose which shortcut you wish to assign to this extension (for instance, *Ctrl+Shift+M*).
-4) In the **Category** section, navigate to *LibreOffice Macros > MyMacros > RemoveBlankCells > RBMain*
-5) In the **Function** section, choose *Remove_Blanks_Click* and click the **Modify** button
-
-If you did everything right, your **Customize** dialog should look like this:
-
-![](Icons/Customize_keyboard.png)
-
-## Usage
-
-This extension provides 5 different use cases for removing blank cells as described below. The extension decides what will be done based on the current selection in the active sheet.
-
-### Remove Blanks in a Single Column
-
-When you select a single column, the extension removes all blank cells placing cells with contents to the top of the selected range.
-
-![](GIFs/Single_Column.gif)
-
-### Remove Blanks in a Single Row
-
-When you select a single row, the extension removes all blank cells placing cells with contents to the left side of the selected range.
-
-![](GIFs/Single_Row.gif)
-
-### Remove Blanks Rows in a Table
-
-When you select a range with multiple rows and columns (a table), the extension will show a dialog box for you to decide what shall be done with the data.
-
-![](Icons/Action_Dialog.png)
-
-If you select *Remove all blank rows*, then all rows with contents will be moved to the top of the selected range.
-
-![](GIFs/RB_Rows.gif)
-
-### Remove Blanks Columns in a Table
-
-If you select *Remove all blank columns*, then all columns with contents will be moved to the left side of the selected range.
-
-![](GIFs/RB_Columns.gif)
+For more information on the options available in the dialog, read the [Help page](Documentation/ExtensionHelp.md).
 
 ## Compatibility
 
-This extension was developed using LibreOffice 7.0. However, it should be compatible with LO 6.2 onwards.
+This extension is developed for LibreOffice Calc and its compatibility depends on the version being used:
 
-All screenshots, GIFs and files were created using Kubuntu 20.10.
+* For LibreOffice 7.1 or newer, use the [latest version](/rafaelhlima/remove_blank_cells/releases/latest) of the extension.
+* For LibreOffice 7.0 or older, use version [0.9.1](/rafaelhlima/remove_blank_cells/releases/tag/v0.9.1) of the extension, which does not have the latest features.
+
+This extension is not developed for **Apache OpenOffice** and the latest releases use API that is only available for LibreOffice. Some users have reported that v0.9.1 works in OpenOffice. However, I would like to stress that it is not the aim ouf this extension to support OpenOffice.
+
+## Contributing
+
+All forms of contribution are welcome! However, at the current stage of the project the priorities are:
+
+* Translation of the [POT file](/Transslation/rb_strings.pot) to support more locales. Currenty the extension supports "en-US" and "pt-BR". Translated PO files are located in the folder [/Source/po/](/Source/po/). Please submit PO files either as a merge request or as an issue with the attached PO file.
+* Improvement to the icons design, so that they are more similar to the Colibre or Breeze icon sets.
+* Bug fixing.
