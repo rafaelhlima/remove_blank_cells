@@ -3,6 +3,6 @@
 <dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="ProgDialog" dlg:left="227" dlg:top="120" dlg:width="179" dlg:height="37" dlg:closeable="true" dlg:moveable="true" dlg:title="Removing...">
  <dlg:bulletinboard>
   <dlg:progressmeter dlg:id="ProgressControl" dlg:tab-index="1" dlg:left="4" dlg:top="18" dlg:width="166" dlg:height="14"/>
-  <dlg:text dlg:id="labInfo" dlg:tab-index="0" dlg:left="5" dlg:top="7" dlg:width="164" dlg:height="13" dlg:value="labInfo"/>
+  <dlg:text dlg:id="labInfo" dlg:tab-index="0" dlg:left="5" dlg:top="5" dlg:width="164" dlg:height="10" dlg:value="labInfo"/>
  </dlg:bulletinboard>
 </dlg:window>
