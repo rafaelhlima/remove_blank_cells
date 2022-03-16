@@ -9,7 +9,7 @@ This is an extension for LibreOffice Calc that removes blank rows and columns in
  * [Installation](#installation)
  * [Usage](#usage)
  * [Compatibility](#compatibility)
- * [Reporting bugs](#reporting_bugs)
+ * [Reporting bugs](#reporting-bugs)
  * [Contributing](#contributing)
 
 ## Installation
