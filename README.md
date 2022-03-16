@@ -4,13 +4,12 @@
 
 This is an extension for LibreOffice Calc that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
 
-This extension is still in Alpha stage, so bugs are expected. If anything goes wrong, please report an issue.
-
 ## Table of Contents
 
  * [Installation](#installation)
  * [Usage](#usage)
  * [Compatibility](#compatibility)
+ * [Reporting bugs](#reporting_bugs)
  * [Contributing](#contributing)
 
 ## Installation
@@ -37,7 +36,7 @@ To quickly run the commands above, the following shortcuts are set by default:
 | --- | --- |
 | Remove blank cells | `Alt + Shift + B` |
 | Remove blank rows | `Alt + Shift + N` |
-| Remove blank cells | `Alt + Shift + M` |
+| Remove blank columns | `Alt + Shift + M` |
 
 For more information on the options available in the dialog, read the [Help page](Documentation/ExtensionHelp.md).
 
@@ -45,14 +44,20 @@ For more information on the options available in the dialog, read the [Help page
 
 This extension is developed for LibreOffice Calc and its compatibility depends on the version being used:
 
-* For LibreOffice 7.1 or newer, use the [latest version](https://github.com/rafaelhlima/remove_blank_cells/releases/latest) of the extension.
-* For LibreOffice 7.0 or older, use version [0.9.1](https://github.com/rafaelhlima/remove_blank_cells/releases/tag/v0.9.1) of the extension, which does not have the latest features.
+* For LibreOffice 7.2 and newer, use the [latest version](https://github.com/rafaelhlima/remove_blank_cells/releases/latest) of the extension.
+* For LibreOffice 7.1 and older, use version [0.9.1](https://github.com/rafaelhlima/remove_blank_cells/releases/tag/v0.9.1) of the extension, which does not have the latest features.
 
 ## Compatibility with OpenOffice
 
 This extension is not developed for **Apache OpenOffice** and the latest releases use API that is only available for LibreOffice.
 
 Some users have reported that v0.9.1 works in OpenOffice. However, I would like to stress that it is not the aim of this extension to support **Apache OpenOffice**.
+
+## Reporting bugs
+
+If you come across any bugs in the extension, please create an **Issue** ticked and provide a detailed report on how to reproduce the issue.
+
+If the bug occurs in a specific data table, please attach a sample an ODS file to your issue to make it easier to confirm the and fix the bug.
 
 ## Contributing
 
