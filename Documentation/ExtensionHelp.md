@@ -1,5 +1,15 @@
 # Remove Blank Cells Help
 
+## Contents
+
+* [Overview](#overview)
+* [Dialog options](#dialog-options)
+    * [Remove all blank rows](#remove-all-blank-rows)
+    * [Remove all blank columns](#remove-all-blank-columns)
+    * [Remove rows based on a single column](#remove-rows-based-on-a-single-column)
+    * [Remove columns based on a single row](#remove-columns-based-on-a-single-row)
+* [Execution modes](#execution-modes)
+
 ## Overview
 
 The **Remove Blank Cells** extension provides a variety of ways to remove blank rows and columns from the selected range in a LibreOffice Calc sheet.
