@@ -58,12 +58,80 @@ Function GetExtensionFolder() As String
     GetExtensionFolder = basePath
 End Function
 
+&apos;Create a dictionary with all string IDs and en-US text
+Function CreateStringDictionary() As Object
+	&apos; Dictionary will all string IDs
+	Dim strDict As Object : strDict = CreateScriptService(&quot;Dictionary&quot;)
+	&apos;Strings used in RBDlg
+	strDict.Add(&quot;RBDlg.title&quot;,                &quot;Remove blank cells&quot;)
+	strDict.Add(&quot;RBDlg.labInfo&quot;,              &quot;Choose one of the operations below&quot;)
+	strDict.Add(&quot;RBDlg.opRemoveRows&quot;,         &quot;Remove all blank rows&quot;)
+	strDict.Add(&quot;RBDlg.opRemoveColumns&quot;,      &quot;Remove all blank columns&quot;)
+	strDict.Add(&quot;RBDlg.labAdvanced&quot;,          &quot;Advanced options&quot;)
+	strDict.Add(&quot;RBDlg.opRemoveRowsByColumn&quot;, &quot;Remove all rows where the following column is empty&quot;)
+	strDict.Add(&quot;RBDlg.opRemoveColumnsByRow&quot;, &quot;Remove all columns where the following row is empty&quot;)
+	strDict.Add(&quot;RBDlg.labColumn&quot;,            &quot;Column&quot;)
+	strDict.Add(&quot;RBDlg.labRow&quot;,               &quot;Row&quot;)
+	strDict.Add(&quot;RBDlg.checkFastMode&quot;,        &quot;Fast mode (all formatting will be lost)&quot;)
+	strDict.Add(&quot;RBDlg.btnOK&quot;,                &quot;OK&quot;)
+	strDict.Add(&quot;RBDlg.btnCancel&quot;,            &quot;Cancel&quot;)
+	strDict.Add(&quot;RBDlg.btnHelp&quot;,              &quot;Help&quot;)
+	&apos;Strings used in MsgDialog
+	strDict.Add(&quot;MsgBox_A&quot;,          &quot;The current selection contains a single cell.&quot;)
+	strDict.Add(&quot;MsgBox_B&quot;,          &quot;This action can only be performed over a single range of cells.&quot;)
+	strDict.Add(&quot;MsgBox_C&quot;,          &quot;The current selection contains multiple ranges.&quot;)
+	strDict.Add(&quot;MsgBox_D&quot;,          &quot;The selected range is invalid.&quot;)
+	strDict.Add(&quot;MsgBox_E&quot;,          &quot;&quot;&quot;Column&quot;&quot; must be a valid column name (such as A, B, C) and must be inside the selected range.&quot;)
+	strDict.Add(&quot;MsgBox_F&quot;,          &quot;&quot;&quot;Row&quot;&quot; must be a valid row number (such as 1, 2, 3) and must be inside the selected range.&quot;)
+	strDict.Add(&quot;MsgBox_G&quot;,          &quot;An unexpected error occurred.&quot;)
+	strDict.Add(&quot;MsgBox_H&quot;,          &quot;If you think this is a bug, report it at:&quot;)
+	strDict.Add(&quot;MsgBox_Error&quot;,      &quot;Error&quot;)
+	strDict.Add(&quot;MsgBox_Unexpected&quot;, &quot;Unexpected error&quot;)
+	&apos;Strings used in ProgDialog
+	strDict.Add(&quot;ProgDialog.title&quot;,      &quot;Removing…&quot;)
+	strDict.Add(&quot;ProgDialog.labInfo&quot;,    &quot;Removing blank cells… %1 %&quot;)
+	strDict.Add(&quot;ProgDialog.finalizing&quot;, &quot;Removing blank cells… 100% (finalizing)&quot;)
+	&apos;Warning messages
+	strDict.Add(&quot;WarningDeleteRows&quot;,    &quot;This operation may remove rows that contain values in other columns.&quot;)
+	strDict.Add(&quot;WarningDeleteColumns&quot;, &quot;This operation may remove columns that contain values in other rows.&quot;)
+	strDict.Add(&quot;WarningProcede&quot;,       &quot;Do you wish to procede?&quot;)
+	strDict.Add(&quot;MsgBox_Warning&quot;,       &quot;Warning&quot;)
+	&apos; Return the dictionary
+	CreateStringDictionary = strDict
+End Function
+
+&apos; This Sub tests the contents of a .po file of a given locale. It creates a Calc file with
+&apos; all string IDs, theit English text and the translated text
 Sub TestPOFile
 	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	&apos; Get all string IDs and text in English
+	Dim strDict As Object, strKeys As Variant
+	strDict = CreateStringDictionary()
+	strKeys = strDict.Keys()
+	&apos; Create a new Calc file
+	Dim ui As Object, oDoc As Object
+	ui = CreateScriptService(&quot;UI&quot;)
+	oDoc = ui.CreateDocument(&quot;Calc&quot;)
+	&apos; Create the L10N service
 	Dim pathToPO, svc
 	pathToPO = GetExtensionFolder() &amp; &quot;/po&quot;
-	MsgBox pathToPO
-	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;en-US&quot;)
-	MsgBox svc._(&quot;RBDlg.title&quot;)
+	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;pt-BR&quot;)
+	&apos; Populate the Calc file
+	oDoc.setValue(&quot;A1&quot;, &quot;String ID&quot;)
+	oDoc.setValue(&quot;B1&quot;, &quot;English text&quot;)
+	oDoc.setValue(&quot;C1&quot;, &quot;Translated text&quot;)
+	Dim startCell As String : startCell = &quot;A2&quot;
+	Dim destCell As String, contRow As Integer, key As Variant
+	contRow = 0
+	For Each key In strKeys
+		destCell = oDoc.Offset(startCell, contRow, 0)
+		oDoc.setValue(destCell, key)
+		destCell = oDoc.Offset(startCell, contRow, 1)
+		oDoc.setValue(destCell, strDict.Item(key))
+		destCell = oDoc.Offset(startCell, contRow, 2)
+		oDoc.setValue(destCell, svc._(key))
+		contRow = contRow + 1
+	Next key
 End Sub
+
 </script:module>
