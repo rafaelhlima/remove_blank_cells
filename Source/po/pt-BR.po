@@ -142,4 +142,4 @@ msgstr "Você deseja continuar?"
 
 msgctxt "MsgBox_Warning"
 msgid  "Warning"
-msgstr ""
+msgstr "Aviso"
