@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.2\n"
 "X-Accelerator-Marker: ~\n"
-"Last-Translator: \n"
+"Last-Translator: Kristoffer Grundström\n"
 "Language: sv_SE\n"
 
 msgctxt "RBDlg.title"
