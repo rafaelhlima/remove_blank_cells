@@ -1,15 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <description
- xmlns="http://openoffice.org/extensions/description/2006"
- xmlns:dep="http://openoffice.org/extensions/description/2006"
- xmlns:xlink="http://www.w3.org/1999/xlink">
+    xmlns="http://openoffice.org/extensions/description/2006"
+    xmlns:dep="http://openoffice.org/extensions/description/2006"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:d="http://openoffice.org/extensions/description/2006"
+    xmlns:l="http://libreoffice.org/extensions/description/2011">
     <identifier value="org.rafaelhlima.removeblanks"/>
     <icon>
         <default xlink:href="icons/RB_Icon.svg" />
     </icon>
-    <version value="0.10.0 alpha"/>
+    <version value="0.10.1 alpha"/>
     <dependencies>
-		<OpenOffice.org-minimal-version value="3.3" name="OpenOffice.org 3.3"/>
+		<l:LibreOffice-minimal-version value="7.2" d:name="LibreOffice 7.2"/>
 	</dependencies>
     <registration>
         <simple-license  accept-by="admin" default-license-id="ID0" suppress-on-update="true" >
