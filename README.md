@@ -2,7 +2,7 @@
 
 ![](Documentation/RB_MainDialog.png)
 
-This is an extension for LibreOffice Calc that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
+This is an extension for [LibreOffice](https://www.libreoffice.org/) [Calc](https://www.libreoffice.org/discover/calc/) that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
 
 ## Table of Contents
 
