@@ -18,7 +18,7 @@ To install this extension:
 
 1) Download the [Latest OXT file](https://github.com/rafaelhlima/remove_blank_cells/releases/latest)
 2) On any LibreOffice application, go to **Tools > Extensions Manager…**
-3) Click **Add** and chose the OXT file
+3) Click **Add** and choose the OXT file
 4) Click **OK** and Accept the licence to finish installation
 5) Restart LibreOffice
 
