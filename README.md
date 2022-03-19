@@ -63,6 +63,6 @@ If the bug occurs in a specific data table, please attach a sample an ODS file t
 
 All forms of contribution are welcome! However, at the current stage of the project the priorities are:
 
-* Translation of the [POT file](Translation/rb_strings.pot) to support more locales. Currenty the extension supports “en-US”, “hu-HU”, “pl-PL”, “pt-BR” and “sv-SE”. Translated PO files are located in the folder [/Source/po/](Source/po/). Please submit PO files either as a merge request or as an issue with the attached PO file.
+* Translation of the [POT file](Translation/rb_strings.pot) to support more locales. Currently the extension supports “en-US”, “hu-HU”, “pl-PL”, “pt-BR” and “sv-SE”. Translated PO files are located in the folder [/Source/po/](Source/po/). Please submit PO files either as a merge request or as an issue with the attached PO file.
 * Improvement to the icons design, so that they are more similar to the Colibre or Breeze icon sets.
 * Testing and Bug fixing.
