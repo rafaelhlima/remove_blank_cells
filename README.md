@@ -57,7 +57,7 @@ Some users have reported that v0.9.1 works in OpenOffice. However, I would like 
 
 If you come across any bugs in the extension, please create an **Issue** ticked and provide a detailed report on how to reproduce the issue.
 
-If the bug occurs in a specific data table, please attach a sample an ODS file to your issue to make it easier to confirm the and fix the bug.
+If the bug occurs in a specific data table, please attach a sample ODS file to your issue to make it easier to confirm the and fix the bug.
 
 ## Contributing
 
