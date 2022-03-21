@@ -22,7 +22,11 @@
         <name xlink:href="mailto:rafael.palma.lima@gmail.com">Rafael Lima</name>
     </publisher>
     <display-name>
-        <name>Remove Blank Cells Description</name>
+        <name>Remove Blank Cells</name>
+        <name xml:lang="hu">Üres cellák eltávolítása</name>
+        <name xml:lang="pl">Usuń puste komórki</name>
+        <name xml:lang="pt">Remover células em branco</name>
+        <name xml:lang="sv">Ta bort tomma celler</name>
     </display-name>
     <update-information>
 		<src/>

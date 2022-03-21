@@ -2,7 +2,7 @@
 
 ![](Documentation/RB_MainDialog.png)
 
-This is an extension for LibreOffice Calc that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
+This is an extension for [LibreOffice](https://www.libreoffice.org/) [Calc](https://www.libreoffice.org/discover/calc/) that removes blank rows and columns in various situations, such as single columns and single rows, as well as tables with multiple columns and rows.
 
 ## Table of Contents
 
@@ -17,8 +17,8 @@ This is an extension for LibreOffice Calc that removes blank rows and columns in
 To install this extension:
 
 1) Download the [Latest OXT file](https://github.com/rafaelhlima/remove_blank_cells/releases/latest)
-2) On any LibreOffice application, go to **Tools > Extensions Manager...**
-3) Click **Add** and chose the OXT file
+2) On any LibreOffice application, go to **Tools > Extensions Manager…**
+3) Click **Add** and choose the OXT file
 4) Click **OK** and Accept the licence to finish installation
 5) Restart LibreOffice
 
@@ -57,12 +57,12 @@ Some users have reported that v0.9.1 works in OpenOffice. However, I would like 
 
 If you come across any bugs in the extension, please create an **Issue** ticked and provide a detailed report on how to reproduce the issue.
 
-If the bug occurs in a specific data table, please attach a sample an ODS file to your issue to make it easier to confirm the and fix the bug.
+If the bug occurs in a specific data table, please attach a sample ODS file to your issue to make it easier to confirm the and fix the bug.
 
 ## Contributing
 
 All forms of contribution are welcome! However, at the current stage of the project the priorities are:
 
-* Translation of the [POT file](Translation/rb_strings.pot) to support more locales. Currenty the extension supports "en-US" and "pt-BR". Translated PO files are located in the folder [/Source/po/](Source/po/). Please submit PO files either as a merge request or as an issue with the attached PO file.
+* Translation of the [POT file](Translation/rb_strings.pot) to support more locales. Currently the extension supports “en-US”, “hu-HU”, “pl-PL”, “pt-BR” and “sv-SE”. Translated PO files are located in the folder [/Source/po/](Source/po/). Please submit PO files either as a merge request or as an issue with the attached PO file.
 * Improvement to the icons design, so that they are more similar to the Colibre or Breeze icon sets.
 * Testing and Bug fixing.
