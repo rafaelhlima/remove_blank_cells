@@ -140,8 +140,8 @@ msgctxt "WarningDeleteColumns"
 msgid  "This operation may remove columns that contain values in other rows."
 msgstr "Ez a művelet eltávolíthatja azokat az oszlopokat, amelyek más sorokban lévő értékeket tartalmaznak."
 
-msgctxt "WarningProcede"
-msgid  "Do you wish to procede?"
+msgctxt "WarningProceed"
+msgid  "Do you wish to proceed?"
 msgstr "Szeretné folytatni?"
 
 msgctxt "MsgBox_Warning"

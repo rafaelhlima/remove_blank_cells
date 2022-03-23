@@ -136,8 +136,8 @@ msgctxt "WarningDeleteColumns"
 msgid  "This operation may remove columns that contain values in other rows."
 msgstr "Esta operação pode remover colunas que contém valores em outras linhas."
 
-msgctxt "WarningProcede"
-msgid  "Do you wish to procede?"
+msgctxt "WarningProceed"
+msgid  "Do you wish to proceed?"
 msgstr "Você deseja continuar?"
 
 msgctxt "MsgBox_Warning"

@@ -143,8 +143,8 @@ msgid "This operation may remove columns that contain values in other rows."
 msgstr ""
 "Ta operacja może usunąć kolumny zawierające wartości w innych wierszach."
 
-msgctxt "WarningProcede"
-msgid "Do you wish to procede?"
+msgctxt "WarningProceed"
+msgid "Do you wish to proceed?"
 msgstr "Czy chcesz kontynuować?"
 
 msgctxt "MsgBox_Warning"

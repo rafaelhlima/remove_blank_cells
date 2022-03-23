@@ -145,8 +145,8 @@ msgstr ""
 "Den här operationen kan ta bort kolumner som innehåller värden i andra "
 "rader."
 
-msgctxt "WarningProcede"
-msgid "Do you wish to procede?"
+msgctxt "WarningProceed"
+msgid "Do you wish to proceed?"
 msgstr "Önskar du fortsätta?"
 
 msgctxt "MsgBox_Warning"

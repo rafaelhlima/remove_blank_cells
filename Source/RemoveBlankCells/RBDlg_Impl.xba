@@ -141,7 +141,7 @@ Sub RBDlg_OK_Click
 			Exit Sub
 		End If
 		&apos;Warn user that this operation may remove existing data
-		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteRows&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProcede&quot;), _
+		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteRows&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProceed&quot;), _
 			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
 		If bProcede = IDNO Then Exit Sub
 		&apos;Check which mode to run (fast/normal)
@@ -167,7 +167,7 @@ Sub RBDlg_OK_Click
 			Exit Sub
 		End If
 		&apos;Warn user that this operation may remove existing data
-		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteColumns&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProcede&quot;), _
+		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteColumns&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProceed&quot;), _
 			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
 		If bProcede = IDNO Then Exit Sub
 		&apos;Check which mode to run (fast/normal)

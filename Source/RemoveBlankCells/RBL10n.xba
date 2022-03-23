@@ -43,7 +43,7 @@ Sub CreatePOTFile
 	&apos;Warning messages
 	svc.AddText(&quot;WarningDeleteRows&quot;,    &quot;This operation may remove rows that contain values in other columns.&quot;)
 	svc.AddText(&quot;WarningDeleteColumns&quot;, &quot;This operation may remove columns that contain values in other rows.&quot;)
-	svc.AddText(&quot;WarningProcede&quot;,       &quot;Do you wish to procede?&quot;)
+	svc.AddText(&quot;WarningProceed&quot;,       &quot;Do you wish to proceed?&quot;)
 	svc.AddText(&quot;MsgBox_Warning&quot;,       &quot;Warning&quot;)
 
 	&apos;Create the POT file
@@ -94,7 +94,7 @@ Function CreateStringDictionary() As Object
 	&apos;Warning messages
 	strDict.Add(&quot;WarningDeleteRows&quot;,    &quot;This operation may remove rows that contain values in other columns.&quot;)
 	strDict.Add(&quot;WarningDeleteColumns&quot;, &quot;This operation may remove columns that contain values in other rows.&quot;)
-	strDict.Add(&quot;WarningProcede&quot;,       &quot;Do you wish to procede?&quot;)
+	strDict.Add(&quot;WarningProceed&quot;,       &quot;Do you wish to proceed?&quot;)
 	strDict.Add(&quot;MsgBox_Warning&quot;,       &quot;Warning&quot;)
 	&apos; Return the dictionary
 	CreateStringDictionary = strDict
