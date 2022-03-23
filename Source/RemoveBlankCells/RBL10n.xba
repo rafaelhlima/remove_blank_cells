@@ -115,7 +115,7 @@ Sub TestPOFile
 	&apos; Create the L10N service
 	Dim pathToPO, svc
 	pathToPO = GetExtensionFolder() &amp; &quot;/po&quot;
-	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;pt-BR&quot;)
+	svc = CreateScriptService(&quot;L10N&quot;, pathToPO, &quot;ar&quot;)
 	&apos; Populate the Calc file
 	oDoc.setValue(&quot;A1&quot;, &quot;String ID&quot;)
 	oDoc.setValue(&quot;B1&quot;, &quot;English text&quot;)
@@ -132,6 +132,13 @@ Sub TestPOFile
 		oDoc.setValue(destCell, svc._(key))
 		contRow = contRow + 1
 	Next key
+End Sub
+
+&apos; Shows the path to the po folder in the currently installed extension
+Sub ShowPathToPO()
+	Dim pathToPO
+	pathToPO = GetExtensionFolder() &amp; &quot;/po&quot;
+	MsgBox pathToPO
 End Sub
 
 </script:module>
