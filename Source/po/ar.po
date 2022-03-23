@@ -102,7 +102,7 @@ msgid ""
 "\"Row\" must be a valid row number (such as 1, 2, 3) and must be inside "
 "the selected range."
 msgstr ""
-"\"\"Row\"\" يجب أن يكون اسم صف صالح (مثل 1، 2، 3) ويجب ان يكون داخل النطاق "
+"\"Row\" يجب أن يكون اسم صف صالح (مثل 1، 2، 3) ويجب ان يكون داخل النطاق "
 "المحدد."
 
 msgctxt "MsgBox_G"

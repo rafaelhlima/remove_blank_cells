@@ -88,13 +88,13 @@ msgstr ""
 
 msgctxt "MsgBox_E"
 msgid  ""
-"""Column"" must be a valid column name (such as A, B, C) and must be "
+"\"Column\" must be a valid column name (such as A, B, C) and must be "
 "inside the selected range."
 msgstr ""
 
 msgctxt "MsgBox_F"
 msgid  ""
-"""Row"" must be a valid row number (such as 1, 2, 3) and must be "
+"\"Row\" must be a valid row number (such as 1, 2, 3) and must be "
 "inside the selected range."
 msgstr ""
 
