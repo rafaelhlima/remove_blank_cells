@@ -9,7 +9,7 @@
     <icon>
         <default xlink:href="icons/RB_Icon.svg" />
     </icon>
-    <version value="0.10.1 alpha"/>
+    <version value="0.10.1"/>
     <dependencies>
 		<l:LibreOffice-minimal-version value="7.2" d:name="LibreOffice 7.2"/>
 	</dependencies>
@@ -23,6 +23,9 @@
     </publisher>
     <display-name>
         <name>Remove Blank Cells</name>
+        <name xml:lang="ar">"أزِل الخلايا الفارغة"</name>
+        <name xml:lang="cs">Odstranit prázdné buňky</name>
+        <name xml:lang="fr">Supprimer les cellules vides</name>
         <name xml:lang="hu">Üres cellák eltávolítása</name>
         <name xml:lang="pl">Usuń puste komórki</name>
         <name xml:lang="pt">Remover células em branco</name>
