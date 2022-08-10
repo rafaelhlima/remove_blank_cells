@@ -58,6 +58,24 @@ Function GetExtensionFolder() As String
     GetExtensionFolder = basePath
 End Function
 
+&apos;Return the Locale to be used by the extension
+&apos;Up until LO 7.3 the Locale property of the Platform service is used (OS locale)
+&apos;Starting with LO 7.4 use the OfficeLocale (used by LibreOffice UI)
+Function GetLocale() As String
+	On Local Error GoTo CatchError
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	Dim svc As Object, sLocale As String
+	svc = CreateScriptService(&quot;Platform&quot;)
+	Try:
+		sLocale = svc.OfficeLocale
+		GoTo Finally:
+	CatchError:
+	On Local Error GoTo 0
+		sLocale = svc.Locale
+	Finally:
+		GetLocale = sLocale
+End Function
+
 &apos;Create a dictionary with all string IDs and en-US text
 Function CreateStringDictionary() As Object
 	&apos; Dictionary will all string IDs

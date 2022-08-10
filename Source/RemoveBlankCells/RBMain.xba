@@ -35,15 +35,15 @@ Sub InitializeExtension()
 	glb_basePath = RBL10n.GetExtensionFolder()
 	glb_poPath = glb_basePath &amp; &quot;/po&quot;
 	&apos;Check if the current locale po file exists
-	Dim fso As Object, plt As Object
+	Dim fso As Object, currentLocale As String
 	fso = CreateScriptService(&quot;FileSystem&quot;)
-	plt = CreateScriptService(&quot;Platform&quot;)
+	currentLocale = RBL10n.GetLocale()
 	&apos;File name of the la-CO.po file
-	Dim requiredPO As String : requiredPO = glb_poPath &amp; &quot;/&quot; &amp; plt.Locale &amp; &quot;.po&quot;
+	Dim requiredPO As String : requiredPO = glb_poPath &amp; &quot;/&quot; &amp; currentLocale &amp; &quot;.po&quot;
 	&apos;File name of the generic la.po file (generic language, without country)
 	&apos;This is used as fallback when the specific la-PO file does not exist
 	Dim requiredLaPO As String, sLanguage As String
-	sLanguage = Split(plt.Locale, &quot;-&quot;)(0)
+	sLanguage = Split(currentLocale, &quot;-&quot;)(0)
 	requiredLaPO = glb_poPath &amp; &quot;/&quot; &amp; sLanguage &amp; &quot;.po&quot;
 	If fso.FileExists(requiredPO) Then
 		&apos;If the full locale file exists, use it
