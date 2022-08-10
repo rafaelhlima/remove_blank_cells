@@ -54,6 +54,9 @@ Sub RBDlg_Show
 		oDlgModel.getByName(&quot;opRemoveColumnsByRow&quot;).Enabled = False
 		oDlgModel.getByName(&quot;labAdvanced&quot;).Enabled = False
 	End If
+	&apos;Sets the OK button as the default button
+	oDlgModel.getByName(&quot;btnOK&quot;).DefaultButton = True
+	oDlgModel.getByName(&quot;btnOK&quot;).PushButtonType = com.sun.star.awt.PushButtonType.STANDARD
 	&apos;Centers de dialog
 	RBMain.CenterDialog(oRBDlg)
 	&apos;Show the dialog
@@ -142,7 +145,7 @@ Sub RBDlg_OK_Click
 		End If
 		&apos;Warn user that this operation may remove existing data
 		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteRows&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProceed&quot;), _
-			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
+			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;))
 		If bProcede = IDNO Then Exit Sub
 		&apos;Check which mode to run (fast/normal)
 		If bCheckFastMode Then
@@ -168,7 +171,7 @@ Sub RBDlg_OK_Click
 		End If
 		&apos;Warn user that this operation may remove existing data
 		bProcede = MsgBox(glb_L10N._(&quot;WarningDeleteColumns&quot;) &amp; Chr(13) &amp; glb_L10N._(&quot;WarningProceed&quot;), _
-			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;)
+			MB_YESNO + MB_ICONEXCLAMATION, Title := glb_L10N._(&quot;Warning&quot;))
 		If bProcede = IDNO Then Exit Sub
 		&apos;Check which mode to run (fast/normal)
 		If bCheckFastMode Then
