@@ -1,0 +1,11 @@
+Quickly remove empty rows and columns from Calc sheets.
+
+After installing the extensions, three entries will be added to the Data menu in LibreOffice Calc:
+- Remove blank cells (this opens the main dialog)
+- Remove blank rows (without opening the dialog)
+- Remove blank columns (without opening the dialog)
+
+There are three shortcuts to call this extension:
+- Alt + Shift + B: Open the main dialog
+- Alt + Shift + N: Remove blank rows (without opening the dialog)
+- Alt + Shift + M: Remove blank columns (without opening the dialog)

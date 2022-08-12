@@ -1,0 +1,11 @@
+Remova rapidamente linhas e colunas em branco de planilhas do Calc.
+
+Após instalar a extensão, três itens serão adicionados ao menu Dados do LibreOffice Calc:
+- Remover células em branco (isto abrirá o diálogo principal)
+- Remover linhas em branco (sem abrir a caixa de diálogo)
+- Remover colunas em branco (sem abrir a caixa de diálogo)
+
+Há três teclas de atalho para chamar esta extensão:
+- Alt + Shift + B: Abre a caixa de diálogo principal
+- Alt + Shift + N: Remove linhas em branco (sem abrir a caixa de diálogo)
+- Alt + Shift + M: Remove colunas em branco (sem abrir a caixa de diálogo)
